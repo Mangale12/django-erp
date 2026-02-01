@@ -1,0 +1,88 @@
+<!-- room_types.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notification Template{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Master Setup</li>
+<li class="breadcrumb-item active">Notification Template</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+<!-- Include modal with fields passed from view -->
+{% include 'components/modals/modal.html' with modal_id='serviceCategoryModal' form_id='serviceCategoryForm' title='Add Service Category' fields=fields %}
+
+<!-- Card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Notification Template</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#serviceCategoryModal">
+            <i data-feather="plus"></i> Add Notification Template
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    const $container = $('#datatable-container');
+    $container.html('<table id="notificationTemplateTable" class="table table-striped table-bordered"></table>');
+    
+    const table = $('#notificationTemplateTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "notification_template_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'code', title: 'Code' },
+            {
+                data: 'is_active',
+                title: 'Status',
+                render: data => data ? 'Active' : 'Inactive'
+            },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function (id) {
+                    return renderActionButtons(id, {
+                        edit: "/notification_template/{id}/edit/",
+                        delete: "/notification_template/{id}/delete/",
+                        modal_id: '#notificationTemplateModal',
+                        title: 'Edit Notification Template',
+                    });
+                }
+            }
+        ]
+    });
+
+
+    // Initialize reusable CRUD modal
+    initCrudModal({
+        modalId: 'notificationTemplateModal',
+        formId: 'notificationTemplateForm',
+        table: table,
+        createUrl: '{% url "notification_template_create" %}',
+        updateUrlTemplate: '/notification_template/{id}/update/',
+        detailUrlTemplate: '/notification_template/{id}/',
+        deleteUrlTemplate: '/notification_template/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Notification Template',
+        afterReset: function() {
+            $('#notificationTemplateModal .modal-title').text('Add Notification Template');
+            $('#notificationTemplateModal [name="is_active"]').prop('checked', true);
+        }
+    });
+});
+</script>
+{% endblock %}

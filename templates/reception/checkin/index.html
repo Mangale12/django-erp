@@ -1,0 +1,88 @@
+<!-- guest.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkin{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Reception</li>
+<li class="breadcrumb-item active">Checkin</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;margin-top:70px;"></div>
+
+<!-- Booking Modal -->
+{% include 'components/modals/modal.html' with modal_id='checkinModal' form_id='checkinForm' title='Add Checkin' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Checkin</h5>
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#checkinModal">
+            <i data-feather="plus"></i> Add Checkin
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table id="checkinTable"
+               class="table table-striped table-bordered w-100"></table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(function () {
+
+    const table = $('#checkinTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "checkin_datatable" %}',
+        columns: [
+            { data: 'guest', title: 'Guest' },
+            { data: 'booking', title: 'Booking' },
+            { data: 'room', title: 'Room' },
+            { data: 'user', title: 'User' },
+            { data: 'payment_mode', title: 'Payment Mode' },
+            { data: 'advance_amount', title: 'Advance Amount' },
+            { data: 'check_in_time', title: 'Check In Time' },
+            { data: 'remarks', title: 'Remarks' },
+ 
+            // ✅ BACKEND GENERATED ACTIONS
+            {
+                data: 'actions',
+                title: 'Actions',
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            feather.replace(); // re-init icons after ajax
+        }
+    });
+
+    // Reusable CRUD modal
+    initCrudModal({
+        modalId: 'checkinModal',
+        formId: 'checkinForm',
+        table: table,
+        createUrl: '{% url "checkin_create" %}',
+        updateUrlTemplate: '/checkin/{id}/update/',
+        detailUrlTemplate: '/checkin/{id}/',
+        deleteUrlTemplate: '/booking/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Checkin',
+        afterReset: function () {
+            $('#checkinModal .modal-title').text('Add Checkin');
+            $('#checkinModal [name="is_active"]').prop('checked', true);
+        }
+    });
+
+});
+</script>
+{% endblock %}

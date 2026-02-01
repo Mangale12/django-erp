@@ -1,0 +1,18 @@
+    {% include 'components/base/header.html' %}
+    <!-- Sidebar -->
+    {% include 'components/base/sidebar.html' %}
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        {% include 'components/base/nav.html' %}
+        
+        <!-- Page Content -->
+        <div id="page-content">
+            {% block content %}{% endblock %}
+            {% block extra_js %}{% endblock %}
+            <!-- Add more page sections as needed -->
+        </div>
+    </div>
+    
+   {% include 'components/base/footer.html' %}

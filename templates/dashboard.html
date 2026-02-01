@@ -1,0 +1,283 @@
+<!-- Dashboard Page -->
+<div id="dashboard-page" class="page-section">
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stats-card card-revenue">
+                <i data-feather="dollar-sign"></i>
+                <h3>$24,580</h3>
+                <p>Total Revenue</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card card-occupancy">
+                <i data-feather="trending-up"></i>
+                <h3>78%</h3>
+                <p>Occupancy Rate</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card card-bookings">
+                <i data-feather="calendar"></i>
+                <h3>156</h3>
+                <p>Total Bookings</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card card-guests">
+                <i data-feather="users"></i>
+                <h3>324</h3>
+                <p>Active Guests</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts and Tables Row -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="custom-table">
+                <div class="table-header p-3 border-bottom">
+                    <h5 class="mb-0">Recent Bookings</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Guest Name</th>
+                                <th>Room</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#BK-1001</td>
+                                <td>Michael Smith</td>
+                                <td>Deluxe Suite 205</td>
+                                <td>05/15/2023</td>
+                                <td>05/20/2023</td>
+                                <td><span class="status-badge status-checked-in">Checked-in</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#BK-1002</td>
+                                <td>Sarah Johnson</td>
+                                <td>Standard 312</td>
+                                <td>05/18/2023</td>
+                                <td>05/22/2023</td>
+                                <td><span class="status-badge status-booked">Booked</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#BK-1003</td>
+                                <td>Robert Williams</td>
+                                <td>Executive 401</td>
+                                <td>05/10/2023</td>
+                                <td>05/15/2023</td>
+                                <td><span class="status-badge status-checked-out">Checked-out</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#BK-1004</td>
+                                <td>Emma Davis</td>
+                                <td>Family Suite 108</td>
+                                <td>05/22/2023</td>
+                                <td>05/25/2023</td>
+                                <td><span class="status-badge status-booked">Booked</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#BK-1005</td>
+                                <td>James Brown</td>
+                                <td>Standard 209</td>
+                                <td>05/12/2023</td>
+                                <td>05/14/2023</td>
+                                <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="custom-table">
+                <div class="table-header p-3 border-bottom">
+                    <h5 class="mb-0">Room Status</h5>
+                </div>
+                <div class="p-3">
+                    <div class="room-status-item d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="room-status room-available"></span>
+                            <span>Available</span>
+                        </div>
+                        <span class="fw-bold">42</span>
+                    </div>
+                    <div class="room-status-item d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="room-status room-occupied"></span>
+                            <span>Occupied</span>
+                        </div>
+                        <span class="fw-bold">28</span>
+                    </div>
+                    <div class="room-status-item d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="room-status room-maintenance"></span>
+                            <span>Maintenance</span>
+                        </div>
+                        <span class="fw-bold">5</span>
+                    </div>
+                    <div class="room-status-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="room-status" style="background-color: #9c27b0;"></span>
+                            <span>Reserved</span>
+                        </div>
+                        <span class="fw-bold">15</span>
+                    </div>
+                </div>
+                
+                <div class="p-3 border-top">
+                    <h6>Quick Actions</h6>
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-primary" id="newBookingBtn"><i data-feather="plus-circle"></i> New Booking</button>
+                        <button class="btn btn-outline-primary" id="checkInBtn"><i data-feather="log-in"></i> Check-in Guest</button>
+                        <button class="btn btn-outline-primary" id="checkOutBtn"><i data-feather="log-out"></i> Check-out Guest</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bookings Page -->
+<div id="bookings-page" class="page-section" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bookings Management</h2>
+        <button class="btn btn-primary" id="addBookingBtn"><i data-feather="plus"></i> Add New Booking</button>
+    </div>
+    
+    <div class="custom-table">
+        <div class="table-header p-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">All Bookings</h5>
+            <div class="d-flex">
+                <input type="text" class="form-control form-control-sm me-2" placeholder="Search bookings..." id="searchBookings">
+                <select class="form-select form-select-sm" style="width: auto;">
+                    <option>All Status</option>
+                    <option>Booked</option>
+                    <option>Checked-in</option>
+                    <option>Checked-out</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Guest Name</th>
+                        <th>Room Type</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Bookings will be loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Rooms Page -->
+<div id="rooms-page" class="page-section" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Room Management</h2>
+        <button class="btn btn-primary" id="addRoomBtn"><i data-feather="plus"></i> Add New Room</button>
+    </div>
+    
+    <div class="row" id="roomsContainer">
+        <!-- Rooms will be loaded via JS -->
+    </div>
+</div>
+
+<!-- Guests Page -->
+<div id="guests-page" class="page-section" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Guest Management</h2>
+        <button class="btn btn-primary" id="addGuestBtn"><i data-feather="plus"></i> Add New Guest</button>
+    </div>
+    
+    <div class="custom-table">
+        <div class="table-header p-3 border-bottom">
+            <h5 class="mb-0">All Guests</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Guest ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Visits</th>
+                        <th>Last Stay</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#G-1001</td>
+                        <td>Michael Smith</td>
+                        <td>michael.smith@example.com</td>
+                        <td>+1 (555) 123-4567</td>
+                        <td>United States</td>
+                        <td>5</td>
+                        <td>05/15/2023</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                            <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#G-1002</td>
+                        <td>Sarah Johnson</td>
+                        <td>sarah.j@example.com</td>
+                        <td>+44 20 1234 5678</td>
+                        <td>United Kingdom</td>
+                        <td>3</td>
+                        <td>04/22/2023</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i data-feather="eye"></i></button>
+                            <button class="btn btn-sm btn-outline-warning"><i data-feather="edit"></i></button>
+                        </td>
+                    </tr>
+                    <!-- More guest rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

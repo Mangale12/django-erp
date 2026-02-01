@@ -1,0 +1,86 @@
+<!-- guest.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Reception</li>
+<li class="breadcrumb-item active">Checkout</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;margin-top:70px;"></div>
+
+<!-- Booking Modal -->
+{% include 'components/modals/modal.html' with modal_id='checkoutModal' form_id='checkoutForm' title='Add Checkout' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Checkout</h5>
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#checkoutModal">
+            <i data-feather="plus"></i> Add Checkout
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table id="checkoutTable"
+               class="table table-striped table-bordered w-100"></table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(function () {
+
+    const table = $('#checkoutTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "check_out_datatable" %}',
+        columns: [
+            { data: 'guest', title: 'Guest' },
+            { data: 'room', title: 'Room' },
+            { data: 'user', title: 'User' },
+            { data: 'payment_mode', title: 'Payment Mode' },
+            { data: 'check_in', title: 'Check In' },
+            { data: 'remarks', title: 'Remarks' },
+ 
+            // ✅ BACKEND GENERATED ACTIONS
+            {
+                data: 'actions',
+                title: 'Actions',
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            feather.replace(); // re-init icons after ajax
+        }
+    });
+
+    // Reusable CRUD modal
+    initCrudModal({
+        modalId: 'checkoutModal',
+        formId: 'checkoutForm',
+        table: table,
+        createUrl: '{% url "check_out_create" %}',
+        updateUrlTemplate: '/check_out/{id}/update/',
+        detailUrlTemplate: '/check_out/{id}/',
+        deleteUrlTemplate: '/check_out/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Checkout',
+        afterReset: function () {
+            $('#checkoutModal .modal-title').text('Add Checkout');
+            $('#checkoutModal [name="is_active"]').prop('checked', true);
+        }
+    });
+
+});
+</script>
+{% endblock %}

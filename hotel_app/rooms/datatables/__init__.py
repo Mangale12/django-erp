@@ -1,0 +1,12 @@
+from hotel_app.rooms.datatables.room_data_table import RoomDataTable
+from hotel_app.rooms.datatables.bed_type_data_table import BedTypeDataTable
+from hotel_app.rooms.datatables.block_data_table import BlockDataTable
+from hotel_app.rooms.datatables.floor_data_table import FloorDataTable
+from hotel_app.rooms.datatables.room_amnity_data_table import RoomAmnityDataTable
+from hotel_app.rooms.datatables.RoomCategoryDataTable import RoomCategoryDataTable
+from hotel_app.rooms.datatables.room_status_data_table import RoomStatusDataTable
+from hotel_app.rooms.datatables.RoomTypeDataTable import RoomTypeDataTable
+from hotel_app.rooms.datatables.room_view_type_data_table import RoomViewTypeDataTable
+from hotel_app.rooms.datatables.room_rate_data_table import RoomRateDataTable
+from hotel_app.rooms.datatables.room_allotment_data_table import RoomAllotmentDataTable
+

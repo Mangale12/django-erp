@@ -1,0 +1,88 @@
+<!-- room_types.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Mode{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Master Setup</li>
+<li class="breadcrumb-item active">Payment Mode</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+<!-- Include modal with fields passed from view -->
+{% include 'components/modals/modal.html' with modal_id='paymentModeModal' form_id='paymentModeForm' title='Add Payment Mode' fields=fields %}
+
+<!-- Card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Payment Mode</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModeModal">
+            <i data-feather="plus"></i> Add Payment Mode
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    const $container = $('#datatable-container');
+    $container.html('<table id="paymentModeTable" class="table table-striped table-bordered"></table>');
+    
+    const table = $('#paymentModeTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "payment_mode_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'code', title: 'Code' },
+            {
+                data: 'is_active',
+                title: 'Status',
+                render: data => data ? 'Active' : 'Inactive'
+            },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function (id) {
+                    return renderActionButtons(id, {
+                        edit: "/payment_mode/{id}/edit/",
+                        delete: "/payment_mode/{id}/delete/",
+                        modal_id: '#paymentModeModal',
+                        title: 'Edit Payment Mode',
+                    });
+                }
+            }
+        ]
+    });
+
+
+    // Initialize reusable CRUD modal
+    initCrudModal({
+        modalId: 'paymentModeModal',
+        formId: 'paymentModeForm',
+        table: table,
+        createUrl: '{% url "payment_mode_create" %}',
+        updateUrlTemplate: '/payment_mode/{id}/update/',
+        detailUrlTemplate: '/payment_mode/{id}/',
+        deleteUrlTemplate: '/payment_mode/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Payment Mode',
+        afterReset: function() {
+            $('#paymentModeModal .modal-title').text('Add Payment Mode');
+            $('#paymentModeModal [name="is_active"]').prop('checked', true);
+        }
+    });
+});
+</script>
+{% endblock %}

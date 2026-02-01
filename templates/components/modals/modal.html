@@ -1,0 +1,152 @@
+<!-- components/modals/modal.html -->
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1">
+    <div class="modal-dialog {{ modal_size|default:'modal-fullscreen' }}">
+      <form id="{{ form_id }}" class="modal-content">
+        {% csrf_token %}
+        <input type="hidden" name="id">
+  
+        <div class="modal-header">
+          <h5 class="modal-title">{{ title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+  
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              {% for field in fields %}
+                <div class="col-md-{{ field.col|default:6 }} mb-3">
+                  {% if field.type == "textarea" %}
+                    <label>{{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    <textarea
+                      class="form-control"
+                      name="{{ field.name }}"
+                      {% if field.required %}required{% endif %}
+                      style="min-height: 150px;"
+                      {% if field.attributes %}
+                        {% for key, value in field.attributes.items %}
+                          {{ key }}="{{ value }}"
+                        {% endfor %}
+                      {% endif %}
+                    ></textarea>
+  
+                  {% elif field.type == "checkbox" %}
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="{{ field.name }}"
+                        id="{{ field.name }}"
+                        value="1"
+                        {% if field.default %}checked{% endif %}
+                        {% if field.attributes %}
+                          {% for key, value in field.attributes.items %}
+                            {{ key }}="{{ value }}"
+                          {% endfor %}
+                        {% endif %}
+                      >
+                      <label class="form-check-label" for="{{ field.name }}">{{ field.label }}</label>
+                    </div>
+
+                  {% elif field.type == "select" %}
+                    <label>{{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    <select
+                      class="form-select"
+                      name="{{ field.name }}"
+                      data-field-name="{{ field.name }}"
+                      data-url="{{ field.url|default:'' }}"
+                      data-modal-id="{{ modal_id }}"
+                      {% if field.required %}required{% endif %}
+                      {% if field.attributes %}
+                        {% for key, value in field.attributes.items %}
+                          {{ key }}="{{ value }}"
+                        {% endfor %}
+                      {% endif %}
+                    >
+                      <option value="">Select {{ field.label }}</option>
+                      
+                    </select>
+                  {% elif field.type == "static_select" %}
+                    <label>{{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    <select
+                      class="form-select"
+                      name="{{ field.name }}"
+                      {% if field.required %}required{% endif %}
+                      {% if field.attributes %}
+                        {% for key, value in field.attributes.items %}
+                          {{ key }}="{{ value }}"
+                        {% endfor %}
+                      {% endif %}
+                    >
+                      <option value="">Select {{ field.label }}</option>
+                      {% if field.options %}
+                        {% for key, value in field.options %}
+                          <option value="{{ key }}">{{ value }}</option>
+                        {% endfor %}
+                      {% endif %}
+                    </select>
+                  {% elif field.type == "datetime" %}
+                    <label>{{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      name="{{ field.name }}"
+                      {% if field.required %}required{% endif %}
+                      {% if field.attributes %}
+                        {% for key, value in field.attributes.items %}
+                          {{ key }}="{{ value }}"
+                        {% endfor %}
+                      {% endif %}
+                    >
+                  {% else %}
+                    <label>{{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    {% if field.prefix or field.suffix %}
+                      <div class="input-group">
+                        {% if field.prefix %}
+                          <span class="input-group-text">{{ field.prefix }}</span>
+                        {% endif %}
+                        <input
+                          type="{{ field.type }}"
+                          class="form-control"
+                          name="{{ field.name }}"
+                          {% if field.required %}required{% endif %}
+                          {% if field.min %}min="{{ field.min }}"{% endif %}
+                          {% if field.step %}step="{{ field.step }}"{% endif %}
+                          {% if field.attributes %}
+                            {% for key, value in field.attributes.items %}
+                              {{ key }}="{{ value }}"
+                            {% endfor %}
+                          {% endif %}
+                        >
+                        {% if field.suffix %}
+                          <span class="input-group-text">{{ field.suffix }}</span>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      <input
+                        type="{{ field.type }}"
+                        class="form-control"
+                        name="{{ field.name }}"
+                        {% if field.required %}required{% endif %}
+                        {% if field.min %}min="{{ field.min }}"{% endif %}
+                        {% if field.step %}step="{{ field.step }}"{% endif %}
+                        {% if field.attributes %}
+                          {% for key, value in field.attributes.items %}
+                            {{ key }}="{{ value }}"
+                          {% endfor %}
+                        {% endif %}
+                      >
+                    {% endif %}
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+  
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-lg btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>

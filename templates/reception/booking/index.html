@@ -1,0 +1,94 @@
+<!-- guest.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Reception</li>
+<li class="breadcrumb-item active">Booking</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;margin-top:70px;"></div>
+
+<!-- Booking Modal -->
+{% include 'components/modals/modal.html' with modal_id='bookingModal' form_id='bookingForm' title='Add Booking' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Booking</h5>
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#bookingModal">
+            <i data-feather="plus"></i> Add Booking
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table id="bookingTable"
+               class="table table-striped table-bordered w-100"></table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(function () {
+
+    const table = $('#bookingTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "booking_datatable" %}',
+        columns: [
+            { data: 'guest', title: 'Guest' },
+            { data: 'booking_source', title: 'Booking Source' },
+            { data: 'booking_date', title: 'Booking Date' },
+            { data: 'check_in_date', title: 'Check In Date' },
+            { data: 'check_out_date', title: 'Check Out Date' },
+            { data: 'room', title: 'Room' },
+            { data: 'no_of_adults', title: 'Number of Adults' },
+            { data: 'no_of_children', title: 'Number of Children' },
+            { data: 'package_type', title: 'Package Type' },
+            { data: 'discount_type', title: 'Discount Type' },
+            { data: 'discount_amount', title: 'Discount Amount' },
+            { data: 'special_request', title: 'Special Request' },
+            { data: 'booking_status', title: 'Booking Status' },
+            { data: 'remarks', title: 'Remarks' },
+
+            // ✅ BACKEND GENERATED ACTIONS
+            {
+                data: 'actions',
+                title: 'Actions',
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            feather.replace(); // re-init icons after ajax
+        }
+    });
+
+    // Reusable CRUD modal
+    initCrudModal({
+        modalId: 'bookingModal',
+        formId: 'bookingForm',
+        table: table,
+        createUrl: '{% url "booking_create" %}',
+        updateUrlTemplate: '/booking/{id}/update/',
+        detailUrlTemplate: '/booking/{id}/',
+        deleteUrlTemplate: '/booking/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Booking',
+        afterReset: function () {
+            $('#bookingModal .modal-title').text('Add Booking');
+            $('#bookingModal [name="is_active"]').prop('checked', true);
+        }
+    });
+
+});
+</script>
+{% endblock %}

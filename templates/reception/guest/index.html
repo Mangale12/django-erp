@@ -1,0 +1,93 @@
+<!-- guest.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Guest{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Reception</li>
+<li class="breadcrumb-item active">Guest</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;margin-top:70px;"></div>
+
+<!-- Guest Modal -->
+{% include 'components/modals/modal.html' with modal_id='guestModal' form_id='guestForm' title='Add Guest' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Guest</h5>
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#guestModal">
+            <i data-feather="plus"></i> Add Guest
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table id="guestTable"
+               class="table table-striped table-bordered w-100"></table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(function () {
+
+    const table = $('#guestTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "guest_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'gender', title: 'Gender' },
+            { data: 'dob', title: 'DOB' },
+            { data: 'nationality', title: 'Nationality' },
+            { data: 'id_proof_type', title: 'ID Proof' },
+            { data: 'id_proof_number', title: 'ID Number' },
+            { data: 'phone', title: 'Phone' },
+            { data: 'email', title: 'Email' },
+            { data: 'address', title: 'Address' },
+            { data: 'guest_type', title: 'Guest Type' },
+            { data: 'country', title: 'Country' },
+            { data: 'state', title: 'State' },
+            { data: 'city', title: 'City' },
+
+            // ✅ BACKEND GENERATED ACTIONS
+            {
+                data: 'actions',
+                title: 'Actions',
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            feather.replace(); // re-init icons after ajax
+        }
+    });
+
+    // Reusable CRUD modal
+    initCrudModal({
+        modalId: 'guestModal',
+        formId: 'guestForm',
+        table: table,
+        createUrl: '{% url "guest_create" %}',
+        updateUrlTemplate: '/guest/{id}/update/',
+        detailUrlTemplate: '/guest/{id}/',
+        deleteUrlTemplate: '/guest/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Guest',
+        afterReset: function () {
+            $('#guestModal .modal-title').text('Add Guest');
+            $('#guestModal [name="is_active"]').prop('checked', true);
+        }
+    });
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,19 @@
+# master_setup/datatables/__init__.py
+
+from .department_data_table import DepartmentDataTable
+from .designation_data_table import DesignationDataTable
+from .shift_type_data_table import ShiftTypeDataTable
+from .employee_type_data_table import EmployeeTypeDataTable
+from .account_type_data_table import AccountTypeDataTable
+from .tax_type_data_table import TaxTypeDataTable
+from .discount_type_data_table import DiscountTypeDataTable
+from .payment_mode_data_table import PaymentModeDataTable
+from .currency_data_table import CurrencyDataTable
+from .service_category_data_table import ServiceCategoryDataTable
+from .miscellaneous_service_data_table import MiscellaneousServiceDataTable
+from .event_type_data_table import EventTypeDataTable
+from .parking_type_data_table import ParkingTypeDataTable
+from .notification_category_data_table import NotificationCategoryDataTable
+from .notification_template_data_table import NotificationTemplateDataTable
+from .booking_source_data_table import BookingSourceDataTable
+from .country_data_table import CountryDataTable

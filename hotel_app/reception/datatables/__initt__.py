@@ -1,0 +1,4 @@
+from hotel_app.reception.datatables.booking_data_table import BookingDataTable
+from hotel_app.reception.datatables.guest_data_table import GuestDataTable
+from hotel_app.reception.datatables.checkin_data_table import CheckInDataTable
+from hotel_app.reception.datatables.checkout_data_table import CheckOutDataTable

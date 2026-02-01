@@ -1,0 +1,23 @@
+<div class="mb-3">
+    <label class="form-label">
+        {{ label }}
+        {% if required %}
+            <span class="text-danger">*</span>
+        {% else %}
+            <small class="text-muted">(optional)</small>
+        {% endif %}
+    </label>
+
+    <input
+        type="{{ type|default:'text' }}"
+        name="{{ name }}"
+        value="{{ value|default:'' }}"
+        class="form-control {{ class|default:'' }}"
+        placeholder="{{ placeholder|default:'' }}"
+        {% if required %}required{% endif %}
+    >
+
+    {% if help %}
+        <small class="text-muted">{{ help }}</small>
+    {% endif %}
+</div>
