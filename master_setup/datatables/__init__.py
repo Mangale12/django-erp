@@ -17,3 +17,4 @@ from .notification_category_data_table import NotificationCategoryDataTable
 from .notification_template_data_table import NotificationTemplateDataTable
 from .booking_source_data_table import BookingSourceDataTable
 from .country_data_table import CountryDataTable
+from .printer_data_table import PrinterDataTable

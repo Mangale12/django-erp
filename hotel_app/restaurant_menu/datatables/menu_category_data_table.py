@@ -1,7 +1,7 @@
 from django.views import View
 from django.http import JsonResponse
 from django.db.models import Q
-from restaurant_menu.models import MenuCategory
+from hotel_app.restaurant_menu.models import MenuCategory
 
 class MenuCategoryDataTable(View):
     def get(self, request):

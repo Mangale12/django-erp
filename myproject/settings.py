@@ -75,7 +75,6 @@ INSTALLED_APPS = [
     'master_setup',
     'user_management',
     'hotel_app.reception',
-    'hotel_app.restaurant',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,86 @@
+<!-- guest.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Printer{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Master Setup</li>
+<li class="breadcrumb-item active">Printer</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;margin-top:70px;"></div>
+
+<!-- Guest Modal -->
+{% include 'components/modals/modal.html' with modal_id='printerModal' form_id='printerForm' title='Add Printer' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Printer</h5>
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#printerModal">
+            <i data-feather="plus"></i> Add Printer
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table id="printerTable"
+               class="table table-striped table-bordered w-100"></table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(function () {
+
+    const table = $('#printerTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "printer_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'code', title: 'Code' },
+            { data: 'printer_type', title: 'Printer Type' },
+            { data: 'ip_address', title: 'IP Address' },
+            { data: 'port', title: 'Port' },
+            { data: 'is_active', title: 'Is Active' },
+
+            // ✅ BACKEND GENERATED ACTIONS
+            {
+                data: 'actions',
+                title: 'Actions',
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            feather.replace(); // re-init icons after ajax
+        }
+    });
+
+    // Reusable CRUD modal
+    initCrudModal({
+        modalId: 'printerModal',
+        formId: 'printerForm',
+        table: table,
+        createUrl: '{% url "printer_create" %}',
+        updateUrlTemplate: '/printer/{id}/update/',
+        detailUrlTemplate: '/printer/{id}/',
+        deleteUrlTemplate: '/printer/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Printer',
+        afterReset: function () {
+            $('#printerModal .modal-title').text('Add Printer');
+            $('#printerModal [name="is_active"]').prop('checked', true);
+        }
+    });
+
+});
+</script>
+{% endblock %}

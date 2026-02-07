@@ -1,4 +1,4 @@
-<!-- room_types.html -->
+<!-- menu_category.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -43,7 +43,6 @@ $(document).ready(function() {
         ajax: '{% url "menu_category_datatable" %}',
         columns: [
             { data: 'name', title: 'Name' },
-            { data: 'restaurant', title: 'Restaurant' },
             {
                 data: 'is_active',
                 title: 'Status',

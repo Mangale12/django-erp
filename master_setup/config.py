@@ -17,6 +17,7 @@ from master_setup.views import (
     notification_template_view,
     booking_source_view,
     country_view,
+    printer_view,
 )
 
 from .datatables import (
@@ -37,6 +38,7 @@ from .datatables import (
     NotificationTemplateDataTable,
     BookingSourceDataTable,
     CountryDataTable,
+    PrinterDataTable,
 )
 
 # Define all your CRUD entities in one place
@@ -142,5 +144,11 @@ MASTER_ENTITIES = [
         'view_module': country_view,
         'datatable_view': CountryDataTable,
         'verbose_name': 'Country'
+    },
+    {
+        'name': 'printer',
+        'view_module': printer_view,
+        'datatable_view': PrinterDataTable,
+        'verbose_name': 'Printer'
     },
 ]

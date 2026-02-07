@@ -112,30 +112,16 @@
                 </a>
                 <ul class="collapse nav flex-column ms-3" id="restaurantSubmenu">
                     <li class="nav-item">
-                        <a class="nav-link" href="">
-                            <i data-feather="list"></i> Food Types
+                        <a class="nav-link" href="{% url 'menu_category_list' %}">
+                            <i data-feather="list"></i> Menu Category
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">
-                            <i data-feather="list"></i> Menu Categories
+                        <a class="nav-link" href="{% url 'menu_sub_category_list' %}">
+                            <i data-feather="list"></i> Menu Sub Category
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="">
-                            <i data-feather="list"></i> Menu Items
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="">
-                            <i data-feather="list"></i> Restaurant Service Type
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="">
-                            <i data-feather="list"></i> Table Setup
-                        </a>
-                    </li>
+                
                 </ul>
             </li>
 
@@ -223,6 +209,11 @@
                     <li>
                         <a class="nav-link" href="{% url 'booking_source_list' %}">
                             <i data-feather="list"></i> Booking Source
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'printer_list' %}">
+                            <i data-feather="list"></i> Printer
                         </a>
                     </li>
                 </ul>
