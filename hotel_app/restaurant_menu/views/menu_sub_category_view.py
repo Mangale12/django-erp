@@ -151,7 +151,7 @@ def delete(request, pk):
     return redirect('menu_sub_category_list')
 
 
-def menu_sub_categories(request):
+def select(request):
     keyword = request.GET.get('term', '').strip()  # Select2 uses `term`
 
     qs = MenuSubCategory.objects.all()
@@ -173,8 +173,3 @@ def menu_sub_categories(request):
         "results": results
     })
 
-
-def select(request):
-    return JsonResponse({
-        "results": results
-    })

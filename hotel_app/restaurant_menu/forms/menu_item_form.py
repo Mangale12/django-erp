@@ -1,6 +1,6 @@
 from django import forms
 from hotel_app.restaurant_menu.models import MenuItem, MenuCategory, MenuSubCategory
-from master_setup.models import TaxType, FoodType, Printer
+from master_setup.models import TaxType, Printer
 
 
 class MenuItemForm(forms.ModelForm):
@@ -25,6 +25,5 @@ class MenuItemForm(forms.ModelForm):
         self.fields['menu_category'].queryset = MenuCategory.objects.all()
         self.fields['menu_sub_category'].queryset = MenuSubCategory.objects.all()
         self.fields['tax_type'].queryset = TaxType.objects.all()
-        self.fields['food_type'].queryset = FoodType.objects.all()
         self.fields['printer'].queryset = Printer.objects.all()
         

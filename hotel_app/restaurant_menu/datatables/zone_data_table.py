@@ -1,9 +1,9 @@
 from django.views import View
 from django.http import JsonResponse
 from django.db.models import Q
-from hotel_app.restaurant_menu.models import MenuItem
+from hotel_app.restaurant_menu.models import Zone
 
-class MenuItemDataTable(View):
+class ZoneDataTable(View):
     def get(self, request):
         draw = int(request.GET.get('draw', 1))
         start = int(request.GET.get('start', 0))
@@ -11,7 +11,7 @@ class MenuItemDataTable(View):
         search_value = request.GET.get('search[value]', '').strip()
 
         # Start with base queryset + select_related to avoid N+1
-        base_queryset = MenuItem.objects.select_related('menu_category', 'menu_sub_category', 'tax_type', 'printer')
+        base_queryset = Zone.objects
 
         total_records = base_queryset.count()  # Total without search
 
@@ -19,12 +19,9 @@ class MenuItemDataTable(View):
         if search_value:
             base_queryset = base_queryset.filter(
                 Q(name__icontains=search_value) |
-                Q(code__icontains=search_value) |
                 Q(description__icontains=search_value) |
-                Q(menu_category__name__icontains=search_value) |
-                Q(menu_sub_category__name__icontains=search_value) |
-                Q(tax_type__name__icontains=search_value) |
-                Q(printer__name__icontains=search_value)  # ← Search in related model
+                Q(service_charge_percentage__icontains=search_value) |
+                Q(is_active__icontains=search_value)
             )
 
         filtered_records = base_queryset.count()
@@ -33,7 +30,7 @@ class MenuItemDataTable(View):
         order_column = request.GET.get('order[0][column]', '0')
         order_dir = request.GET.get('order[0][dir]', 'asc')
         
-        columns = ['id', 'name', 'code', 'menu_category', 'menu_sub_category', 'description', 'price', 'food_type', 'is_active']
+        columns = ['id', 'name', 'description', 'service_charge_percentage', 'is_active']
         if order_column.isdigit() and int(order_column) < len(columns):
             order_field = columns[int(order_column)]
             if order_dir == 'desc':
@@ -49,17 +46,9 @@ class MenuItemDataTable(View):
             data.append({
                 "id": item.id,
                 "name": item.name,
-                "code": item.code,
-                "menu_category": item.menu_category.name if item.menu_category else "-",  # ← Key change
-                "menu_sub_category": item.menu_sub_category.name if item.menu_sub_category else "-",  # ← Key change
                 "description": item.description or "",
-                'price': item.price,
-                "food_type": item.food_type,
-                "recipe_linked": item.recipe_linked,
-                "printer": item.printer.name if item.printer else "-",  # ← Key change
+                "service_charge_percentage": item.service_charge_percentage,
                 "is_active": item.is_active,
-                # Optional: include category ID if needed for editing
-                # "menu_category_id": item.menu_category_id,
             })
 
         return JsonResponse({

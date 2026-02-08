@@ -2,18 +2,17 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse, HttpR
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
-from django.forms.models import model_to_dict
-from restaurant_menu.models import TableSetup
+from hotel_app.restaurant_menu.models import TableSetup, Zone
 
 
 def table_setup_list(request):
     table_setups = TableSetup.objects.all()
     fields = [
-        {"name": "table_name", "label": "Table Name", "type": "text", "required": True},
+        {"name": "name", "label": "Table Name", "type": "text", "required": True},
         {"name": "seating_capacity", "label": "Seating Capacity", "type": "number", "required": True},
         {"name": "location_area", "label": "Location Area", "type": "textarea"},
+        {"name": "zone", "label": "Zone", "type": "select", "required": True, "url": reverse('zone_select')},
         {"name": "is_active", "label": "Active", "type": "checkbox", "default": True}
     ]
     return render(request, 'restaurant_menu/table_setup/list.html', {
@@ -29,10 +28,12 @@ def table_setup_create(request):
     if request.method == 'POST':
         try:
             with transaction.atomic():
+                zone = Zone.objects.get(id=request.POST.get('zone'))
                 table_setup = TableSetup.objects.create(
-                    table_name=request.POST.get('table_name'),
+                    name=request.POST.get('name'),
                     seating_capacity=request.POST.get('seating_capacity'),
                     location_area=request.POST.get('location_area'),
+                    zone=zone,
                     is_active='is_active' in request.POST,
                 )
 
@@ -65,9 +66,11 @@ def table_setup_update(request, pk):
     table_setup = get_object_or_404(TableSetup, pk=pk)
 
     if request.method == 'POST':
-        table_setup.table_name = request.POST.get('table_name')
+        table_setup.name = request.POST.get('name')
         table_setup.seating_capacity = request.POST.get('seating_capacity')
         table_setup.location_area = request.POST.get('location_area')
+        zone = Zone.objects.get(id=request.POST.get('zone'))
+        table_setup.zone = zone
         table_setup.is_active = True if request.POST.get('is_active') else False
         table_setup.save()
 
@@ -86,9 +89,10 @@ def table_setup_edit(request, pk):
         'success': True,
         'data': {
             'id': table_setup.id,
-            'table_name': table_setup.table_name,
+            'name': table_setup.name,
             'seating_capacity': table_setup.seating_capacity,
             'location_area': table_setup.location_area,
+            'zone': table_setup.zone.id,
             'is_active': table_setup.is_active,
         }
     }
@@ -103,9 +107,11 @@ def table_setup_update_ajax(request, pk):
     table_setup = get_object_or_404(TableSetup, pk=pk)
     
     try:
-        table_setup.table_name = request.POST.get('table_name')
+        table_setup.name = request.POST.get('name')
         table_setup.seating_capacity = request.POST.get('seating_capacity')
         table_setup.location_area = request.POST.get('location_area')
+        zone = Zone.objects.get(id=request.POST.get('zone'))
+        table_setup.zone = zone
         table_setup.is_active = bool(request.POST.get('is_active'))
         table_setup.save()
         
@@ -114,9 +120,10 @@ def table_setup_update_ajax(request, pk):
             'message': 'Table Setup updated successfully',
             'table_setup': {
                 'id': table_setup.id,
-                'table_name': table_setup.table_name,
+                'name': table_setup.name,
                 'seating_capacity': table_setup.seating_capacity,
                 'location_area': table_setup.location_area,
+                'zone': table_setup.zone.id,
                 'is_active': table_setup.is_active,
                 'edit_url': reverse('table_setup_update', args=[table_setup.id]),
                 'delete_url': reverse('table_setup_delete', args=[table_setup.id]),
@@ -135,3 +142,26 @@ def table_setup_delete(request, pk):
     
     messages.success(request, 'Table Setup deleted successfully')
     return redirect('table_setup_list')
+
+def select(request):
+    keyword = request.GET.get('term', '').strip()  # Select2 uses `term`
+
+    qs = TableSetup.objects.all()
+
+    if keyword:
+        qs = qs.filter(name__icontains=keyword)
+
+    qs = qs.order_by('-created_at')[:5]
+
+    results = [
+        {
+            "id": item.id,
+            "text": item.name
+        }
+        for item in qs
+    ]
+
+    return JsonResponse({
+        "results": results
+    })
+    

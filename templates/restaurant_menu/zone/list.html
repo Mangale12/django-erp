@@ -1,0 +1,89 @@
+<!-- room_types.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Zone{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Restaurant/Menu</li>
+<li class="breadcrumb-item active">Zone</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+<!-- Include modal with fields passed from view -->
+{% include 'components/modals/modal.html' with modal_id='zoneModal' form_id='zoneForm' title='Add Zone' fields=fields %}
+
+<!-- Card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Zone</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#zoneModal">
+            <i data-feather="plus"></i> Add Zone
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    const $container = $('#datatable-container');
+    $container.html('<table id="zoneTable" class="table table-striped table-bordered"></table>');
+    
+    const table = $('#zoneTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "zone_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'description', title: 'Description' },
+            { data: 'service_charge_percentage', title: 'Service Charge Percentage' },
+            {
+                data: 'is_active',
+                title: 'Active',
+                render: data => data ? 'Active' : 'Inactive'
+            },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function (id) {
+                    return renderActionButtons(id, {
+                        edit: "/zone/{id}/edit/",
+                        delete: "/zone/{id}/delete/",
+                        modal_id: '#zoneModal',
+                        title: 'Edit Zone',
+                    });
+                }
+            }
+        ]
+    });
+
+
+    // Initialize reusable CRUD modal
+    initCrudModal({
+        modalId: 'zoneModal',
+        formId: 'zoneForm',
+        table: table,
+        createUrl: '{% url "zone_create" %}',
+        updateUrlTemplate: '/zone/{id}/update/',
+        detailUrlTemplate: '/zone/{id}/',
+        deleteUrlTemplate: '/zone/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Zone',
+        afterReset: function() {
+            $('#zoneModal .modal-title').text('Add Zone');
+            $('#zoneModal [name="is_active"]').prop('checked', true);
+        }
+    });
+});
+</script>
+{% endblock %}

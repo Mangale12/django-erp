@@ -17,7 +17,7 @@ def index(request):
         {"name": "price", "label": "Price", "type": "number", "required": True},
         {"name": "description", "label": "Description", "type": "textarea", "required": True},
         {"name": "tax_type", "label": "Tax Type", "type": "select", "required": True, "url": reverse('tax_type_select')},
-        {"name": "food_type", "label": "Food Type", "type": "select_static", "required": True, "values": MenuItem.FOOT_TYPE},
+        {"name": "food_type", "label": "Food Type", "type": "select_static", "required": True, "values": MenuItem.FOOD_TYPE },
         {"name": "recipe_linked", "label": "Recipe Linked", "type": "checkbox", "default": True},
         {"name": "printer", "label": "Printer", "type": "select", "required": True, "url": reverse('printer_select')}
     ]
@@ -27,7 +27,7 @@ def index(request):
 
 
 @require_http_methods(["GET", "POST"])
-def menu_item_create(request):
+def create(request):
     if request.method == 'POST':
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         try:
@@ -35,13 +35,26 @@ def menu_item_create(request):
                 # ✅ Get the MenuCategory instance
                 menu_category_id = request.POST.get('menu_category')
                 menu_category = get_object_or_404(MenuCategory, id=menu_category_id)
-
+                # ✅ Get the MenuSubCategory instance
+                menu_sub_category_id = request.POST.get('menu_sub_category')
+                menu_sub_category = get_object_or_404(MenuSubCategory, id=menu_sub_category_id)
+                # ✅ Get the TaxType instance
+                tax_type_id = request.POST.get('tax_type')
+                tax_type = get_object_or_404(TaxType, id=tax_type_id)
+                # ✅ Get the Printer instance
+                printer_id = request.POST.get('printer')
+                printer = get_object_or_404(Printer, id=printer_id)
                 menu_item = MenuItem.objects.create(
                     name=request.POST.get('name'),
                     code=request.POST.get('code'),
                     description=request.POST.get('description'),
                     price=request.POST.get('price'),
                     menu_category=menu_category,  # ← Now it's a proper instance
+                    menu_sub_category=menu_sub_category,
+                    tax_type=tax_type,
+                    food_type=request.POST.get('food_type'),
+                    recipe_linked=bool(request.POST.get('recipe_linked')),
+                    printer=printer,
                     is_active=bool(request.POST.get('is_active')),
                 )
                 
@@ -52,10 +65,14 @@ def menu_item_create(request):
                         'menu_item': {
                             'id': menu_item.id,
                             'name': menu_item.name,
-                            'code': menu_item.code,
                             'description': menu_item.description,
                             'price': str(menu_item.price),  # Decimal → string
                             'menu_category': menu_item.menu_category.id,  # or .name if you prefer
+                            'menu_sub_category': menu_item.menu_sub_category.id,
+                            'tax_type': menu_item.tax_type.id,
+                            'food_type': menu_item.food_type,
+                            'recipe_linked': menu_item.recipe_linked,
+                            'printer': menu_item.printer.id,
                             'is_active': menu_item.is_active,
                         }
                     })
@@ -83,25 +100,37 @@ def menu_item_create(request):
     return render(request, 'restaurant_menu/menu_item/form.html')
 
 
-def menu_item_update(request, pk):
+def update(request, pk):
     menu_item = get_object_or_404(MenuItem, pk=pk)
-
+    menu_category = get_object_or_404(MenuCategory, id=menu_item.menu_category_id)
+    menu_sub_category = get_object_or_404(MenuSubCategory, id=menu_item.menu_sub_category_id)
+    tax_type = get_object_or_404(TaxType, id=menu_item.tax_type_id)
+    printer = get_object_or_404(Printer, id=menu_item.printer_id)
     if request.method == 'POST':
         menu_item.name = request.POST.get('name')
-        menu_item.code = request.POST.get('code')
         menu_item.description = request.POST.get('description')
         menu_item.is_active = True if request.POST.get('is_active') else False
+        menu_item.menu_category = get_object_or_404(MenuCategory, id=request.POST.get('menu_category'))
+        menu_item.menu_sub_category = get_object_or_404(MenuSubCategory, id=request.POST.get('menu_sub_category'))
+        menu_item.tax_type = get_object_or_404(TaxType, id=request.POST.get('tax_type'))
+        menu_item.food_type = request.POST.get('food_type')
+        menu_item.recipe_linked = True if request.POST.get('recipe_linked') else False
+        menu_item.printer = get_object_or_404(Printer, id=request.POST.get('printer'))
         menu_item.save()
 
         messages.success(request, 'Menu Item updated successfully')
         return redirect('menu_item_list')
 
     return render(request, 'restaurant_menu/menu_item/form.html', {
-        'menu_item': menu_item
+        'menu_item': menu_item,
+        'menu_category': menu_category,
+        'menu_sub_category': menu_sub_category,
+        'tax_type': tax_type,
+        'printer': printer
     })
 
 
-def menu_item_edit(request, pk):
+def edit(request, pk):
     """Return menu item data as JSON"""
     menu_item = get_object_or_404(MenuItem, pk=pk)
     data = {
@@ -109,7 +138,6 @@ def menu_item_edit(request, pk):
         'data': {
             'id': menu_item.id,
             'name': menu_item.name,
-            'code': menu_item.code,
             'description': menu_item.description,
             'is_active': menu_item.is_active,
         }
@@ -117,7 +145,7 @@ def menu_item_edit(request, pk):
     return JsonResponse(data)
 
 
-def menu_item_update_ajax(request, pk):
+def update_ajax(request, pk):
     """Handle AJAX updates for menu items"""
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
@@ -126,9 +154,14 @@ def menu_item_update_ajax(request, pk):
     
     try:
         menu_item.name = request.POST.get('name')
-        menu_item.code = request.POST.get('code')
         menu_item.description = request.POST.get('description', '')
         menu_item.is_active = bool(request.POST.get('is_active'))
+        menu_item.menu_category_id = request.POST.get('menu_category')
+        menu_item.menu_sub_category_id = request.POST.get('menu_sub_category')
+        menu_item.tax_type_id = request.POST.get('tax_type')
+        menu_item.food_type = request.POST.get('food_type')
+        menu_item.recipe_linked = True if request.POST.get('recipe_linked') else False
+        menu_item.printer_id = request.POST.get('printer')
         menu_item.save()
         
         return JsonResponse({
@@ -137,7 +170,6 @@ def menu_item_update_ajax(request, pk):
             'menu_item': {
                 'id': menu_item.id,
                 'name': menu_item.name,
-                'code': menu_item.code,
                 'description': menu_item.description,
                 'is_active': menu_item.is_active,
                 'edit_url': reverse('menu_item_update', args=[menu_item.id]),
@@ -148,7 +180,7 @@ def menu_item_update_ajax(request, pk):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 
-def menu_item_delete(request, pk):
+def delete(request, pk):
     menu_item = get_object_or_404(MenuItem, pk=pk)
     menu_item.delete()
     
@@ -157,3 +189,32 @@ def menu_item_delete(request, pk):
     
     messages.success(request, 'Menu Item deleted successfully')
     return redirect('menu_item_list')
+
+def show(request, pk):
+    menu_item = get_object_or_404(MenuItem, pk=pk)
+    return render(request, 'restaurant_menu/menu_item/show.html', {
+        'menu_item': menu_item
+    })
+
+def select(request):
+    keyword = request.GET.get('term', '').strip()  # Select2 uses `term`
+
+    qs = MenuItem.objects.all()
+
+    if keyword:
+        qs = qs.filter(name__icontains=keyword)
+
+    qs = qs.order_by('-created_at')[:5]
+
+    results = [
+        {
+            "id": item.id,
+            "text": item.name
+        }
+        for item in qs
+    ]
+
+    return JsonResponse({
+        "results": results
+    })
+    
