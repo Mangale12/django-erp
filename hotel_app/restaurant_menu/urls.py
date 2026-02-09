@@ -20,5 +20,5 @@ for entity in RESTAURANT_ENTITIES:
         path(f'{name}/edit_ajax/<int:pk>/', views.edit, name=f'{name}_edit_ajax'),
 
         path(f"{name}/datatable/", entity['datatable_view'].as_view(), name=f"{name}_datatable"),
-        path(f"{name} /select/", views.select, name=f"{name}_select"),
+        path(f"{name}/select/", views.select, name=f"{name}_select"),
     ])

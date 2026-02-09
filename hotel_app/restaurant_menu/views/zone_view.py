@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.shortcuts import render, redirect, get_object_or_404, reverse, HttpResponse
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -147,6 +147,7 @@ def show(request, pk):
 
 
 def select(request):
+    
     keyword = request.GET.get('term', '').strip()  # Select2 uses `term`
 
     qs = Zone.objects.all()
@@ -165,10 +166,7 @@ def select(request):
     ]
 
     return JsonResponse({
-        "results": results,
-        "pagination": {
-            "more": qs.has_next()
-        }
+        "results": results
     })
 
     

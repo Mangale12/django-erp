@@ -6,7 +6,7 @@ from django.db import transaction
 from hotel_app.restaurant_menu.models import TableSetup, Zone
 
 
-def table_setup_list(request):
+def index(request):
     table_setups = TableSetup.objects.all()
     fields = [
         {"name": "name", "label": "Table Name", "type": "text", "required": True},
@@ -22,7 +22,7 @@ def table_setup_list(request):
 
 
 @require_http_methods(["GET", "POST"])
-def table_setup_create(request):
+def create(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if request.method == 'POST':
@@ -62,7 +62,7 @@ def table_setup_create(request):
 
     return render(request, 'restaurant_menu/table_setup/form.html')
 
-def table_setup_update(request, pk):
+def update(request, pk):
     table_setup = get_object_or_404(TableSetup, pk=pk)
 
     if request.method == 'POST':
@@ -82,7 +82,7 @@ def table_setup_update(request, pk):
     })
 
 
-def table_setup_edit(request, pk):
+def edit(request, pk):
     """Return table setup data as JSON"""
     table_setup = get_object_or_404(TableSetup, pk=pk)
     data = {
@@ -99,7 +99,7 @@ def table_setup_edit(request, pk):
     return JsonResponse(data)
 
 
-def table_setup_update_ajax(request, pk):
+def update_ajax(request, pk):
     """Handle AJAX updates for table setups"""
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
@@ -133,7 +133,7 @@ def table_setup_update_ajax(request, pk):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 
-def table_setup_delete(request, pk):
+def delete(request, pk):
     table_setup = get_object_or_404(TableSetup, pk=pk)
     table_setup.delete()
     

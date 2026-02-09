@@ -1,7 +1,7 @@
 from django.views import View
 from django.http import JsonResponse
 from django.db.models import Q
-from restaurant_menu.models import TableSetup
+from hotel_app.restaurant_menu.models import TableSetup
 
 class TableSetupDataTable(View):
     def get(self, request):
@@ -16,7 +16,7 @@ class TableSetupDataTable(View):
 
         if search_value:
             base_queryset = base_queryset.filter(
-                Q(table_name__icontains=search_value) |
+                Q(name__icontains=search_value) |
                 Q(seating_capacity__icontains=search_value) |
                 Q(location_area__icontains=search_value)
             )
@@ -28,7 +28,7 @@ class TableSetupDataTable(View):
         data = [
             {
                 "id": item.id,
-                "table_name": item.table_name,
+                "name": item.name,
                 "seating_capacity": item.seating_capacity,
                 "location_area": item.location_area,
                 "is_active": item.is_active,
