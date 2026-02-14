@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse, HttpR
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
-from django.forms.models import model_to_dict
-from hotel_app.restaurant_menu.models import MenuItem, MenuCategory
+from hotel_app.restaurant_menu.models import MenuItem, MenuCategory,MenuSubCategory
+from hotel_app.master_setup.models import TaxType, Printer
 
 
 def index(request):
