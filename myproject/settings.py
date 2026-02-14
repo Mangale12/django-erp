@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ij(zen&anpjq#b!#5#(c*a+@y0eqcbsgayrz&@y00&!@__n2sl
 DEBUG = True
 
 # Allow all hosts for development
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['myproject.local', '127.0.0.1', 'localhost']
 
 # Security settings for development
 SECURE_PROXY_SSL_HEADER = None
