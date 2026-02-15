@@ -198,7 +198,7 @@ def show(request, pk):
     })
 
 def select(request):
-    keyword = request.GET.get('term', '').strip()  # Select2 uses `term`
+    keyword = (request.GET.get('term') or request.GET.get('q') or '').strip()
 
     qs = MenuItem.objects.all()
 
@@ -210,12 +210,25 @@ def select(request):
     results = [
         {
             "id": item.id,
-            "text": item.name
+            "text": item.name,
+            "price": str(item.price or 0),
         }
         for item in qs
     ]
 
     return JsonResponse({
         "results": results
+    })
+    
+
+def details(request, pk):
+    menu_item = get_object_or_404(MenuItem, pk=pk)
+    return JsonResponse({
+        'success': True,
+        'data': {
+            'id': menu_item.id,
+            'name': menu_item.name,
+            'price': menu_item.price
+        }
     })
     

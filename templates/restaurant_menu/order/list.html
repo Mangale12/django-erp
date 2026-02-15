@@ -41,14 +41,12 @@ $(document).ready(function() {
         serverSide: true,
         ajax: '{% url "order_datatable" %}',
         columns: [
-            { data: 'name', title: 'Name' },
-            { data: 'seating_capacity', title: 'Seating Capacity' },
-            { data: 'location_area', title: 'Location Area' },
-            {
-                data: 'is_active',
-                title: 'Status',
-                render: data => data ? 'Active' : 'Inactive'
-            },
+            { data: 'order_number', title: 'Order Number' },
+            { data: 'room', title: 'Room' },
+            { data: 'guest_name', title: 'Guest Name' },
+            {data : 'table', title: 'Table' },
+            { data: 'order_start_time', title: 'Order Start Time' },
+            { data: 'order_status', title: 'Order Status' },
             {
                 data: 'id',
                 title: 'Actions',
@@ -80,9 +78,39 @@ $(document).ready(function() {
         entityName: 'Order',
         afterReset: function() {
             $('#orderModal .modal-title').text('Add Order');
-            $('#orderModal [name="is_active"]').prop('checked', true);
         }
     });
+
+    $(document).on('change', '.menu_item', function(e) {
+        var id = $(this).val();
+        var quantity = $(this).closest('tr').find('.quantity');
+        var price = $(this).closest('tr').find('.unit_price');
+        var total = $(this).closest('tr').find('.total_price');
+        // 1. Generate the URL with a dummy '0'
+        var url = "{% url 'menu_item_details' pk=0 %}".replace('0', id);
+
+        if (id) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    price.val(response.data.price);
+                    total.val(response.data.price);
+                    quantity.val(1);
+                },
+                error: function(xhr) {
+                    console.error("Could not fetch price details.");
+                }
+            });
+        }
+    });
+
+    $(document).on('change', '.quantity', function(){
+        var quantity = $(this).val();
+        var price = $(this).closest('tr').find('.unit_price').val();
+        var total = quantity * price;
+        $(this).closest('tr').find('.total_price').val(total);
+    })
 });
 </script>
 {% endblock %}

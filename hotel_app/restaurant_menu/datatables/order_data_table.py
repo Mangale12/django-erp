@@ -20,7 +20,7 @@ class OrderDataTable(View):
             base_queryset = base_queryset.filter(
                 Q(table__name__icontains=search_value) |
                 Q(guest_name__icontains=search_value) |
-                Q(room__name__icontains=search_value) |
+                Q(room__room_number__icontains=search_value) |
                 Q(order_start_time__icontains=search_value) |
                 Q(order_status__icontains=search_value)
             )
@@ -46,17 +46,13 @@ class OrderDataTable(View):
         for item in paginated_queryset:
             data.append({
                 "id": item.id,
+                "order_number": item.order_number,
                 "table": item.table.name if item.table else "-",  # ← Key change
                 "guest_name": item.guest_name,
-                "room": item.room.name if item.room else "-",  # ← Key change
+                "room": item.room.room_number if item.room else "-",  # ← Key change
                 "order_start_time": item.order_start_time,
                 "order_status": item.order_status,
                 "guest_count": item.guest_count,
-                "recipe_linked": item.recipe_linked,
-                "printer": item.printer.name if item.printer else "-",  # ← Key change
-                "is_active": item.is_active,
-                # Optional: include category ID if needed for editing
-                # "menu_category_id": item.menu_category_id,
             })
 
         return JsonResponse({

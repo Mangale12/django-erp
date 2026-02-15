@@ -1,6 +1,7 @@
 # reception/urls.py
 from django.urls import path
 from .config import RESTAURANT_ENTITIES
+from hotel_app.restaurant_menu.views import menu_item_view
 
 urlpatterns = []
 
@@ -22,3 +23,7 @@ for entity in RESTAURANT_ENTITIES:
         path(f"{name}/datatable/", entity['datatable_view'].as_view(), name=f"{name}_datatable"),
         path(f"{name}/select/", views.select, name=f"{name}_select"),
     ])
+
+urlpatterns += [
+    path("menu-item-details/<int:pk>", menu_item_view.details, name="menu_item_details"),
+]

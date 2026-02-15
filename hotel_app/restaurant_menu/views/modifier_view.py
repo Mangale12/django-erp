@@ -158,7 +158,7 @@ def show(request, pk):
 
 
 def select(request):
-    keyword = request.GET.get('term', '').strip()  # Select2 uses `term`
+    keyword = (request.GET.get('term') or request.GET.get('q') or '').strip()
 
     qs = Modifier.objects.all()
 
@@ -178,7 +178,7 @@ def select(request):
     return JsonResponse({
         "results": results,
         "pagination": {
-            "more": qs.has_next()
+            "more": False
         }
     })
 

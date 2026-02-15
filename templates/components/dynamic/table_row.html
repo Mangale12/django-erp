@@ -6,9 +6,12 @@
       {% if field.type == "select" %}
         <select
           name="{{ section_name }}[{{ index }}][{{ field.name }}]"
-          class="form-select select2"
+          class="form-select select2 {{ field.class }}"
           {% if field.required %}required{% endif %}
-          data-url="{{ field.url|default:'' }}">
+          data-url="{{ field.url|default:'' }}"
+          {% for key, value in field.attributes.items %}
+            {{ key }}="{{ value }}"
+          {% endfor %}>
           <option value="">Select {{ field.label }}</option>
         </select>
 
@@ -16,14 +19,20 @@
         <input
           type="number"
           name="{{ section_name }}[{{ index }}][{{ field.name }}]"
-          class="form-control"
+          class="form-control {{ field.class }}"
           {% if field.readonly %}readonly{% endif %}
-          {% if field.min %}min="{{ field.min }}"{% endif %}>
+          {% if field.min %}min="{{ field.min }}"{% endif %}
+          {% for key, value in field.attributes.items %}
+            {{ key }}="{{ value }}"
+          {% endfor %}>
 
       {% elif field.type == "select_static" %}
         <select
           name="{{ section_name }}[{{ index }}][{{ field.name }}]"
-          class="form-select select2">
+          class="form-select select2 {{ field.class }}"
+          {% for key, value in field.attributes.items %}
+            {{ key }}="{{ value }}"
+          {% endfor %}>
           {% for val, label in field.values %}
             <option value="{{ val }}">{{ label }}</option>
           {% endfor %}
@@ -32,9 +41,12 @@
       {% elif field.type == "multi_select" %}
         <select
           name="{{ section_name }}[{{ index }}][{{ field.name }}][]"
-          class="form-select select2"
+          class="form-select select2 {{ field.class }}"
           multiple
-          data-url="{{ field.url }}">
+          data-url="{{ field.url }}"
+          {% for key, value in field.attributes.items %}
+            {{ key }}="{{ value }}"
+          {% endfor %}>
         </select>
       {% endif %}
     </td>
