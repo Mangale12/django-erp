@@ -10,21 +10,36 @@ def index(request):
     fields = [
         {"name": "table", "label": "Table", "type": "select", "required": True, "url": reverse('table_setup_select')},
         {"name": "guest_count", "label": "Guest Count", "type": "number", "required": True},
-        {"name": "guest_name", "label": "Guest Name", "type": "text", "required": False},
-        {"name": "room", "label": "Room", "type": "select", "required": False, "url": reverse('room_select')},
+        {"name": "guest_name", "label": "Guest Name", "type": "text"},
+        {"name": "room", "label": "Room", "type": "select", "url": reverse('room_select')},
         {"name": "order_start_time", "label": "Order Start Time", "type": "datetime", "required": True},
-        {"name": "order_status", "label": "Order Status", "type": "select_static", "required": True, "values": Order.ORDER_STATUS },
-        {"name" : "menu_items", "label": "Menu Items", "type": "select", "required": True, "url": reverse('menu_item_select')},
-        {"name" : "quantity", "label": "Quantity", "type": "number", "required": True},
-        {"name" : "unit_price", "label": "Unit Price", "type": "number", "required": True},
-        {"name" : "total_price", "label": "Total Price", "type": "number", "required": True},
-        {"name" : "order_item_status", "label": "Order Item Status", "type": "select_static", "required": True, "values": OrderItem.ORDER_ITEM_STATUS },
-        {"name" : "modifiers", "label": "Modifiers", "type": "select", "required": True, "url": reverse('modifier_select')},
-        {"name" : "cancel_reason", "label": "Cancel Reason", "type": "text", "required": False}
+        {"name": "order_status", "label": "Order Status", "type": "select_static", "required": True, "values": Order.ORDER_STATUS},
+        {"name": "cancel_reason", "label": "Cancel Reason", "type": "text"},
     ]
-    return render(request, 'restaurant_menu/order/list.html', {
-        'fields': fields
+
+    dynamic_sections = {
+        "order_items": {
+            "title": "Order Items",
+            "layout": "table",
+            "min_items": 1,
+            "max_items": 10,
+            "add_label": "Add Item",
+            "fields": [
+                {"name": "menu_item", "label": "Menu Item", "type": "select", "required": True, "url": reverse("menu_item_select")},
+                {"name": "quantity", "label": "Qty", "type": "number", "required": True, "min": 1},
+                {"name": "unit_price", "label": "Unit Price", "type": "number", "readonly": True},
+                {"name": "total_price", "label": "Total", "type": "number", "readonly": True},
+                {"name": "modifiers", "label": "Modifiers", "type": "multi_select", "url": reverse("modifier_select")},
+                {"name": "status", "label": "Status", "type": "select_static", "values": OrderItem.ORDER_ITEM_STATUS},
+            ]
+        }
+    }
+
+    return render(request, "restaurant_menu/order/list.html", {
+        "fields": fields,
+        "dynamic_sections": dynamic_sections,
     })
+
 
 
 @require_http_methods(["GET", "POST"])

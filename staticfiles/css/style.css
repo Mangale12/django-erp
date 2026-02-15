@@ -1,0 +1,47 @@
+/* Global admin styles for Hotel ERP */
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #f8f9fa;
+}
+
+/* Sidebar */
+.sidebar {
+  min-height: calc(100vh - 56px); /* subtract navbar height */
+  border-right: 1px solid rgba(0,0,0,.1);
+  width: 270px; /* Increased from default (commonly 220px or 250px) */
+}
+.sidebar .nav-link {
+  color: #333;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: #e9ecef;
+  color: #000;
+}
+
+/* Main content spacing */
+main {
+  min-height: calc(100vh - 56px - 64px); /* navbar and footer */
+}
+
+/* Tables */
+.table thead th {
+  white-space: nowrap;
+}
+
+/* Utility */
+.text-small { font-size: .875rem; }
+.text-tiny { font-size: .75rem; }
+
+/* Cards */
+.card-shadow {
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+}

@@ -5,7 +5,8 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from django.forms.models import model_to_dict
-from hotel_app.restaurant_menu.models import MenuItem, MenuCategory
+from hotel_app.restaurant_menu.models import MenuItem, MenuCategory, MenuSubCategory
+from master_setup.models import TaxType, Printer
 
 
 def index(request):

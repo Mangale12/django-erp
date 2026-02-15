@@ -1,0 +1,48 @@
+<tr class="dynamic-row">
+  <input type="hidden" name="{{ section_name }}[{{ index }}][id]">
+
+  {% for field in section.fields %}
+    <td>
+      {% if field.type == "select" %}
+        <select
+          name="{{ section_name }}[{{ index }}][{{ field.name }}]"
+          class="form-select select2"
+          {% if field.required %}required{% endif %}
+          data-url="{{ field.url|default:'' }}">
+          <option value="">Select {{ field.label }}</option>
+        </select>
+
+      {% elif field.type == "number" %}
+        <input
+          type="number"
+          name="{{ section_name }}[{{ index }}][{{ field.name }}]"
+          class="form-control"
+          {% if field.readonly %}readonly{% endif %}
+          {% if field.min %}min="{{ field.min }}"{% endif %}>
+
+      {% elif field.type == "select_static" %}
+        <select
+          name="{{ section_name }}[{{ index }}][{{ field.name }}]"
+          class="form-select select2">
+          {% for val, label in field.values %}
+            <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+
+      {% elif field.type == "multi_select" %}
+        <select
+          name="{{ section_name }}[{{ index }}][{{ field.name }}][]"
+          class="form-select select2"
+          multiple
+          data-url="{{ field.url }}">
+        </select>
+      {% endif %}
+    </td>
+  {% endfor %}
+
+  <td>
+    <button type="button" class="btn btn-sm btn-outline-danger remove-row">
+      <i class="fas fa-trash"></i>
+    </button>
+  </td>
+</tr>
