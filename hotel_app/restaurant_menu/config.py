@@ -6,7 +6,10 @@ from hotel_app.restaurant_menu.views import (
     modifier_view,
     zone_view,
     table_setup_view,
-    order_view
+    order_view,
+    kitchen_type_view,
+    outlet_view,
+    kitchen_view
 )
 
 from hotel_app.restaurant_menu.datatables.menu_category_data_table import MenuCategoryDataTable
@@ -16,6 +19,9 @@ from hotel_app.restaurant_menu.datatables.modifier_data_table import ModifierDat
 from hotel_app.restaurant_menu.datatables.zone_data_table import ZoneDataTable
 from hotel_app.restaurant_menu.datatables.table_setup_data_table import TableSetupDataTable
 from hotel_app.restaurant_menu.datatables.order_data_table import OrderDataTable
+from hotel_app.restaurant_menu.datatables.kitchen_type_data_table import KitchenTypeDataTable
+from hotel_app.restaurant_menu.datatables.outlet_data_table import OutletDataTable
+from hotel_app.restaurant_menu.datatables.kitchen_data_table import KitchenDataTable
 
 # Define all your CRUD entities in one place
 RESTAURANT_ENTITIES = [
@@ -61,4 +67,22 @@ RESTAURANT_ENTITIES = [
         'datatable_view': OrderDataTable,
         'verbose_name': 'Order'
     },
+    {
+        'name': 'kitchen_type',
+        'view_module': kitchen_type_view,
+        'datatable_view': KitchenTypeDataTable,
+        'verbose_name': 'Kitchen Type'
+    },
+    {
+        'name': 'outlet',
+        'view_module': outlet_view,
+        'datatable_view': OutletDataTable,
+        'verbose_name': 'Outlet'
+    },
+    {
+        'name': 'kitchen',
+        'view_module': kitchen_view,
+        'datatable_view': KitchenDataTable,
+        'verbose_name': 'Kitchen'
+    }
 ]

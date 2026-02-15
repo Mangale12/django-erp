@@ -3,3 +3,5 @@ from .menu_item_data_table import MenuItemDataTable
 from .menu_category_data_table import MenuCategoryDataTable
 from .menu_sub_category_data_table import MenuSubCategoryDataTable
 from .order_data_table import OrderDataTable
+from .kitchen_type_data_table import KitchenTypeDataTable
+from .outlet_data_table import OutletDataTable

@@ -1,0 +1,88 @@
+<!-- room_types.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kitchen Type{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Restaurant/Menu</li>
+<li class="breadcrumb-item active">Kitchen Type</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+<!-- Include modal with fields passed from view -->
+{% include 'components/modals/modal.html' with modal_id='kitchenTypeModal' form_id='kitchenTypeForm' title='Add Kitchen Type' fields=fields %}
+
+<!-- Card -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Kitchen Type</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kitchenTypeModal">
+            <i data-feather="plus"></i> Add Kitchen Type
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    const $container = $('#datatable-container');
+    $container.html('<table id="kitchenTypeTable" class="table table-striped table-bordered"></table>');
+    
+    const table = $('#kitchenTypeTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "kitchen_type_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'description', title: 'Description' },
+            {
+                data: 'is_active',
+                title: 'Status',
+                render: data => data ? 'Active' : 'Inactive'
+            },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function (id) {
+                    return renderActionButtons(id, {
+                        edit: "/kitchen-types/{id}/edit/",
+                        delete: "/kitchen-types/{id}/delete/",
+                        modal_id: '#kitchenTypeModal',
+                        title: 'Edit Kitchen Type',
+                    });
+                }
+            }
+        ]
+    });
+
+
+    // Initialize reusable CRUD modal
+    initCrudModal({
+        modalId: 'kitchenTypeModal',
+        formId: 'kitchenTypeForm',
+        table: table,
+        createUrl: '{% url "kitchen_type_create" %}',
+        updateUrlTemplate: '/kitchen-types/{id}/update/',
+        detailUrlTemplate: '/kitchen-types/{id}/',
+        deleteUrlTemplate: '/kitchen-types/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Kitchen Type',
+        afterReset: function() {
+            $('#kitchenTypeModal .modal-title').text('Add Kitchen Type');
+            $('#kitchenTypeModal [name="is_active"]').prop('checked', true);
+        }
+    });
+});
+</script>
+{% endblock %}

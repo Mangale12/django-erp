@@ -1,54 +1,43 @@
 from django.db import models
-
+from django.conf import settings
+from .kitchen_type import KitchenType
+from .outlet import Outlet
 
 class Kitchen(models.Model):
-    KITCHEN_TYPE_CHOICES = (
-        ("food", "Food"),
-        ("beverage", "Beverage"),
-        ("shisha", "Shisha"),
-        ("pastry", "Pastry"),
-    )
+    code = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=100)
+    type = models.ForeignKey(KitchenType, on_delete=models.PROTECT, related_name="kitchens", null=True, blank=True)
+    outlet = models.ForeignKey(Outlet, on_delete=models.PROTECT, related_name="kitchens", null=True, blank=True)
+    printer_ip_address = models.GenericIPAddressField(null=True, blank=True)
+    backup_printer_ip = models.GenericIPAddressField(null=True, blank=True)
+    kds_display_id = models.CharField(max_length=50, null=True, blank=True)
 
-    kitchen_name = models.CharField(
-        max_length=256,
-        unique=True,
-        null=True,
-        blank=True,
-        help_text="Kitchen name (e.g., Cold Kitchen, Bakery, Bar, Main Galley)",
+    is_kds_enabled = models.BooleanField(default=False)
+    is_printer_enabled = models.BooleanField(default=True)
+
+    display_order = models.PositiveIntegerField(default=1)
+
+    is_active = models.BooleanField(default=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="kitchens_created"
     )
-    kitchen_type = models.CharField(
-        max_length=20,
-        choices=KITCHEN_TYPE_CHOICES,
-        null=True,
-        blank=True,
-        help_text="Kitchen type",
-    )
-    printer_ip_address = models.GenericIPAddressField(
-        protocol="IPv4",
-        null=True,
-        blank=True,
-        help_text="Network address for thermal printer",
-    )
-    backup_printer_ip = models.GenericIPAddressField(
-        protocol="IPv4",
-        null=True,
-        blank=True,
-        help_text="Failover printer IP address",
-    )
-    kds_display_id = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        help_text="Linked KDS display/tablet identifier",
-    )
-    is_active = models.BooleanField(default=True, help_text="Is this kitchen active?")
     created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="kitchens_updated",
+        null=True,
+        blank=True
+    )
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "mst_kitchens"
-        verbose_name = "Kitchen"
-        verbose_name_plural = "Kitchens"
+        ordering = ["display_order", "name"]
 
     def __str__(self):
-        return self.kitchen_name
+        return f"{self.code} - {self.name}"
