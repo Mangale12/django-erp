@@ -16,8 +16,10 @@ $(document).on("click", function (e) {
 
     const index = $tbody.children().length;
 
+    cleanClonedSelect2($newRow);
     resetRowInputs($newRow, sectionName, index);
     $tbody.append($newRow);
+    initializeRowSelects($newRow);
 
     return;
   }
@@ -91,5 +93,62 @@ function reindexRows($tbody) {
         );
       }
     });
+  });
+}
+
+function cleanClonedSelect2($row) {
+  $row.find("span.select2").remove();
+
+  $row.find("select").each(function () {
+    const $select = $(this);
+    $select.removeClass("select2-hidden-accessible");
+    $select.removeAttr("data-select2-id tabindex aria-hidden");
+    $select.find("option").removeAttr("data-select2-id");
+  });
+}
+
+function initializeRowSelects($row) {
+  if (!$.fn.select2) return;
+
+  const $modal = $row.closest(".modal");
+
+  $row.find("select").each(function () {
+    const $select = $(this);
+    const url = $select.data("url");
+    const label = $select.data("field-name") || "option";
+    const placeholder = $select.find("option:first").text() || `Select ${label}`;
+    const config = {
+      theme: "bootstrap-5",
+      width: "100%",
+      placeholder: placeholder,
+      allowClear: !$select.prop("required"),
+      dropdownParent: $modal.length ? $modal : undefined
+    };
+
+    if (url) {
+      config.ajax = {
+        url: url,
+        dataType: "json",
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term,
+            page: params.page || 1
+          };
+        },
+        processResults: function (data, params) {
+          return {
+            results: data.results || data,
+            pagination: {
+              more: (params.page || 1) < ((data.pagination && data.pagination.total_pages) || 1)
+            }
+          };
+        },
+        cache: true
+      };
+      config.minimumInputLength = 0;
+    }
+
+    $select.select2(config);
   });
 }
