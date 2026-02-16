@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
-from hotel_app.restaurant_menu.models import Kitchen  # your Kitchen model
+from hotel_app.restaurant_menu.models import Kitchen, KitchenType, Outlet  # your Kitchen model
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -13,10 +14,10 @@ def index(request):
     kitchens = Kitchen.objects.select_related("outlet").all()
 
     fields = [
-        {"name": "kitchen_code", "label": "Code", "type": "text", "required": True},
-        {"name": "kitchen_name", "label": "Name", "type": "text", "required": True},
-        {"name": "kitchen_type", "label": "Type", "type": "select", "options": Kitchen.KitchenType.choices},
-        {"name": "outlet", "label": "Outlet", "type": "select", "options": [(o.id, o.outlet_name) for o in Kitchen.objects.values_list('outlet__id', 'outlet__outlet_name').distinct()]},
+        {"name": "code", "label": "Code", "type": "text", "required": True},
+        {"name": "name", "label": "Name", "type": "text", "required": True},
+        {"name": "type", "label": "Type", "type": "select", "url": reverse('kitchen_type_select')},
+        {"name": "outlet", "label": "Outlet", "type": "select", "url": reverse('outlet_select')},
         {"name": "is_kds_enabled", "label": "KDS Enabled", "type": "checkbox"},
         {"name": "is_printer_enabled", "label": "Printer Enabled", "type": "checkbox"},
         {"name": "is_active", "label": "Active", "type": "checkbox", "default": True},
@@ -27,8 +28,9 @@ def index(request):
         'fields': fields
     })
 
-
+@login_required
 @require_http_methods(["GET", "POST"])
+
 def create(request):
     """
     Create Kitchen (normal POST or AJAX)
@@ -39,10 +41,10 @@ def create(request):
         try:
             with transaction.atomic():
                 kitchen = Kitchen.objects.create(
-                    kitchen_code=request.POST.get('kitchen_code'),
-                    kitchen_name=request.POST.get('kitchen_name'),
-                    kitchen_type=request.POST.get('kitchen_type'),
-                    outlet_id=request.POST.get('outlet'),
+                    code=request.POST.get('code'),
+                    name=request.POST.get('name'),
+                    type=get_object_or_404(KitchenType, pk=request.POST.get('type')),
+                    outlet=get_object_or_404(Outlet, pk=request.POST.get('outlet')),
                     printer_ip_address=request.POST.get('printer_ip_address'),
                     backup_printer_ip=request.POST.get('backup_printer_ip'),
                     kds_display_id=request.POST.get('kds_display_id'),
@@ -59,9 +61,8 @@ def create(request):
                         'message': 'Kitchen created successfully',
                         'kitchen': {
                             'id': kitchen.id,
-                            'code': kitchen.kitchen_code,
-                            'name': kitchen.kitchen_name,
-                            'type': kitchen.get_kitchen_type_display(),
+                            'code': kitchen.code,
+                            'name': kitchen.name,
                             'edit_url': reverse('kitchen_update', args=[kitchen.id]),
                             'delete_url': reverse('kitchen_delete', args=[kitchen.id]),
                         }
@@ -88,9 +89,9 @@ def edit(request, pk):
         'success': True,
         'data': {
             'id': kitchen.id,
-            'kitchen_code': kitchen.kitchen_code,
-            'kitchen_name': kitchen.kitchen_name,
-            'kitchen_type': kitchen.kitchen_type,
+            'code': kitchen.code,
+            'name': kitchen.name,
+            'type': kitchen.type.id,
             'outlet': kitchen.outlet.id,
             'printer_ip_address': kitchen.printer_ip_address,
             'backup_printer_ip': kitchen.backup_printer_ip,
@@ -105,17 +106,17 @@ def edit(request, pk):
 
 
 @require_http_methods(["POST"])
-def update_ajax(request, pk):
+def update(request, pk):
     """
     Update Kitchen via AJAX
     """
     kitchen = get_object_or_404(Kitchen, pk=pk)
 
     try:
-        kitchen.kitchen_code = request.POST.get('kitchen_code')
-        kitchen.kitchen_name = request.POST.get('kitchen_name')
-        kitchen.kitchen_type = request.POST.get('kitchen_type')
-        kitchen.outlet_id = request.POST.get('outlet')
+        kitchen.code = request.POST.get('code')
+        kitchen.name = request.POST.get('name')
+        kitchen.type = KitchenType.objects.get_or_404(pk=request.POST.get('type'))
+        kitchen.outlet = Outlet.objects.get_or_404(pk=request.POST.get('outlet'))
         kitchen.printer_ip_address = request.POST.get('printer_ip_address')
         kitchen.backup_printer_ip = request.POST.get('backup_printer_ip')
         kitchen.kds_display_id = request.POST.get('kds_display_id')
@@ -131,9 +132,9 @@ def update_ajax(request, pk):
             'message': 'Kitchen updated successfully',
             'kitchen': {
                 'id': kitchen.id,
-                'code': kitchen.kitchen_code,
-                'name': kitchen.kitchen_name,
-                'type': kitchen.get_kitchen_type_display(),
+                'code': kitchen.code,
+                'name': kitchen.name,
+                'type': kitchen.get_type_display(),
                 'edit_url': reverse('kitchen_update', args=[kitchen.id]),
                 'delete_url': reverse('kitchen_delete', args=[kitchen.id]),
             }
@@ -169,8 +170,8 @@ def datatable(request):
 
     if search_value:
         qs = qs.filter(
-            Q(kitchen_code__icontains=search_value) |
-            Q(kitchen_name__icontains=search_value) |
+            Q(code__icontains=search_value) |
+            Q(name__icontains=search_value) |
             Q(outlet__outlet_name__icontains=search_value)
         )
 
@@ -181,9 +182,9 @@ def datatable(request):
     data = []
     for k in qs:
         data.append({
-            "code": k.kitchen_code,
-            "name": k.kitchen_name,
-            "type": k.get_kitchen_type_display(),
+            "code": k.code,
+            "name": k.name,
+            "type": k.get_type_display(),
             "outlet": k.outlet.outlet_name,
             "kds": "Yes" if k.is_kds_enabled else "No",
             "printer": k.printer_ip_address or "-",
@@ -209,9 +210,9 @@ def select(request):
     keyword = request.GET.get('term', '').strip()
     qs = Kitchen.objects.all()
     if keyword:
-        qs = qs.filter(kitchen_name__icontains=keyword)
+        qs = qs.filter(name__icontains=keyword)
 
     qs = qs.order_by('-created_at')[:5]
 
-    results = [{"id": k.id, "text": k.kitchen_name} for k in qs]
+    results = [{"id": k.id, "text": k.name} for k in qs]
     return JsonResponse({"results": results})

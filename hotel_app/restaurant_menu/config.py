@@ -9,7 +9,9 @@ from hotel_app.restaurant_menu.views import (
     order_view,
     kitchen_type_view,
     outlet_view,
-    kitchen_view
+    kitchen_view,
+    kitchen_station_view,
+    item_kitchen_map_view
 )
 
 from hotel_app.restaurant_menu.datatables.menu_category_data_table import MenuCategoryDataTable
@@ -22,6 +24,8 @@ from hotel_app.restaurant_menu.datatables.order_data_table import OrderDataTable
 from hotel_app.restaurant_menu.datatables.kitchen_type_data_table import KitchenTypeDataTable
 from hotel_app.restaurant_menu.datatables.outlet_data_table import OutletDataTable
 from hotel_app.restaurant_menu.datatables.kitchen_data_table import KitchenDataTable
+from hotel_app.restaurant_menu.datatables.kitchen_station_data_table import KitchenStationDataTable
+from hotel_app.restaurant_menu.datatables.item_kitchen_map_data_table import ItemKitchenMapDataTable
 
 # Define all your CRUD entities in one place
 RESTAURANT_ENTITIES = [
@@ -84,5 +88,18 @@ RESTAURANT_ENTITIES = [
         'view_module': kitchen_view,
         'datatable_view': KitchenDataTable,
         'verbose_name': 'Kitchen'
+    },
+    {
+        'name': 'kitchen_station',
+        'view_module': kitchen_station_view,
+        'datatable_view': KitchenStationDataTable,
+        'verbose_name': 'Kitchen Station'
+    },
+    {
+        'name': 'item_kitchen_map',
+        'view_module': item_kitchen_map_view,
+        'datatable_view': ItemKitchenMapDataTable,
+        'verbose_name': 'Item Kitchen Map'
     }
+
 ]

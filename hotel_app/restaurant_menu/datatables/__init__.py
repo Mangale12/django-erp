@@ -5,3 +5,4 @@ from .menu_sub_category_data_table import MenuSubCategoryDataTable
 from .order_data_table import OrderDataTable
 from .kitchen_type_data_table import KitchenTypeDataTable
 from .outlet_data_table import OutletDataTable
+from .item_kitchen_map_data_table import ItemKitchenMapDataTable

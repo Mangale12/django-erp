@@ -7,9 +7,9 @@ class KitchenForm(forms.ModelForm):
     class Meta:
         model = Kitchen
         fields = [
-            "kitchen_code",
-            "kitchen_name",
-            "kitchen_type",
+            "code",
+            "name",
+            "type",
             "outlet",
             "printer_ip_address",
             "backup_printer_ip",
@@ -21,15 +21,15 @@ class KitchenForm(forms.ModelForm):
         ]
 
         widgets = {
-            "kitchen_code": forms.TextInput(attrs={
+            "code": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "Enter Kitchen Code"
             }),
-            "kitchen_name": forms.TextInput(attrs={
+            "name": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "Enter Kitchen Name"
             }),
-            "kitchen_type": forms.Select(attrs={
+            "type": forms.Select(attrs={
                 "class": "form-select"
             }),
             "outlet": forms.Select(attrs={
