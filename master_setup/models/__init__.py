@@ -20,4 +20,5 @@ from .booking_source import BookingSource
 from .salary_structure import SalaryStructure
 from .country import Country
 from .printer import Printer
+from .priority_level import PriorityLevel
 

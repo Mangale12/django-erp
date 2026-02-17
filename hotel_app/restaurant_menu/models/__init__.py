@@ -16,3 +16,5 @@ from .outlet import Outlet
 from .kitchen import Kitchen
 from .kitchen_station import KitchenStation
 from .item_kitchen_map import ItemKitchenMap
+from .kot_type import KOTType
+from .kot_status import KOTStatus
