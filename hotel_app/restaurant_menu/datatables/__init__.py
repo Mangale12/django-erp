@@ -6,3 +6,8 @@ from .order_data_table import OrderDataTable
 from .kitchen_type_data_table import KitchenTypeDataTable
 from .outlet_data_table import OutletDataTable
 from .item_kitchen_map_data_table import ItemKitchenMapDataTable
+from .kot_header_data_table import KOTHeaderDataTable
+from .kds_log_data_table import KDSLogDataTable
+from .kot_amendment_data_table import KOTAmendmentDataTable
+from .kot_course_control_data_table import KOTCourseControlDataTable
+from .kot_reprint_log_data_table import KOTReprintLogDataTable

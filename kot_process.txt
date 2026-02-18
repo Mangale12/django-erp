@@ -1,0 +1,148 @@
+2.2 trn_kot_line_items
+
+KOT_Line_ID (PK)
+
+KOT_ID (FK)
+
+Item_ID (FK)
+
+Item_Code
+
+Item_Name_Snapshot
+
+Course_Number
+
+Fire_Sequence
+
+Quantity
+
+UOM
+
+Modifiers_Text
+
+Cooking_Instruction
+
+Allergy_Notes
+
+Is_Complimentary (Boolean)
+
+Item_Status (Pending / Preparing / Ready / Bounced / Served / Cancelled)
+
+Priority_Level
+
+Expected_Prep_Time_Minutes
+
+Timestamp_Fired
+
+Timestamp_Start_Cooking
+
+Timestamp_Ready
+
+Timestamp_Served
+
+Timestamp_Cancelled
+
+Chef_ID (FK - Nullable)
+
+Station_ID (FK - Nullable)
+
+Is_Bounced (Boolean)
+
+Bounce_Reason (Nullable)
+
+Cancelled_By (Nullable)
+
+Cancel_Approved_By_Manager_ID (Nullable)
+
+Cancellation_Reason_Code (Nullable)
+
+Created_At
+
+Updated_At
+
+✅ 3️⃣ KDS & WORKFLOW TRACKING
+3.1 trn_kds_logs
+
+Log_ID (PK)
+
+Business_Date
+
+KOT_Line_ID (FK)
+
+Kitchen_ID (FK)
+
+Station_ID (FK)
+
+Action_Taken (Fire / Start / Bump / Recall / Delay / Cancel)
+
+Action_By (User_ID)
+
+Action_Timestamp
+
+Delay_Reason (Nullable)
+
+Device_ID
+
+IP_Address
+
+✅ 4️⃣ VOID & AMENDMENT CONTROL
+4.1 trn_kot_amendments
+
+Amendment_ID (PK)
+
+Business_Date
+
+KOT_ID (FK)
+
+KOT_Line_ID (FK - Nullable)
+
+Order_ID (FK)
+
+Original_Item_ID
+
+New_Item_ID (Nullable)
+
+Action_Type (Added / Cancelled / Quantity_Changed / Item_Changed)
+
+Old_Quantity
+
+New_Quantity
+
+Manager_ID (FK)
+
+Reason_Code
+
+Remarks
+
+Timestamp_Amended
+
+Amended_By
+
+✅ 5️⃣ OPTIONAL (HIGH-END HOTEL FEATURES)
+5.1 trn_kot_course_control
+
+Course_Control_ID (PK)
+
+KOT_ID (FK)
+
+Course_Number
+
+Fire_Status (Hold / Fired / Completed)
+
+Hold_Until_Time
+
+Fired_By
+
+Fired_Timestamp
+
+5.2 trn_kot_reprint_logs
+
+Reprint_Log_ID (PK)
+
+KOT_ID (FK)
+
+Reprinted_By
+
+Reprint_Timestamp
+
+Reason

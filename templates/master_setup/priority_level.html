@@ -1,0 +1,84 @@
+<!-- guest.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Priority Level{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Master Setup</li>
+<li class="breadcrumb-item active">Priority Level</li>
+{% endblock %}
+
+{% block content %}
+<!-- Alerts -->
+<div id="alert-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;margin-top:70px;"></div>
+
+<!-- Guest Modal -->
+{% include 'components/modals/modal.html' with modal_id='priorityLevelModal' form_id='priorityLevelForm' title='Add Priority Level' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Priority Level</h5>
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#priorityLevelModal">
+            <i data-feather="plus"></i> Add Priority Level
+        </button>
+    </div>
+
+    <div class="card-body">
+        <table id="priorityLevelTable"
+               class="table table-striped table-bordered w-100"></table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(function () {
+
+    const table = $('#priorityLevelTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "priority_level_datatable" %}',
+        columns: [
+            { data: 'name', title: 'Name' },
+            { data: 'code', title: 'Code' },
+            { data: 'description', title: 'Description' },
+            { data: 'is_active', title: 'Is Active' },
+
+            // ✅ BACKEND GENERATED ACTIONS
+            {
+                data: 'actions',
+                title: 'Actions',
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        drawCallback: function () {
+            feather.replace(); // re-init icons after ajax
+        }
+    });
+
+    // Reusable CRUD modal
+    initCrudModal({
+        modalId: 'priorityLevelModal',
+        formId: 'priorityLevelForm',
+        table: table,
+        createUrl: '{% url "priority_level_create" %}',
+        updateUrlTemplate: '/priority_level/{id}/update/',
+        detailUrlTemplate: '/priority_level/{id}/',
+        deleteUrlTemplate: '/priority_level/{id}/delete/',
+        idFieldName: 'id',
+        entityName: 'Priority Level',
+        afterReset: function () {
+            $('#priorityLevelModal .modal-title').text('Add Priority Level');
+            $('#priorityLevelModal [name="is_active"]').prop('checked', true);
+        }
+    });
+
+});
+</script>
+{% endblock %}

@@ -18,3 +18,9 @@ from .kitchen_station import KitchenStation
 from .item_kitchen_map import ItemKitchenMap
 from .kot_type import KOTType
 from .kot_status import KOTStatus
+from .kot_header import KOTHeader
+from .kot_line_item import KOTLineItem
+from .kds_log import KDSLog
+from .kot_amendment import KOTAmendment
+from .kot_course_control import KOTCourseControl
+from .kot_reprint_log import KOTReprintLog

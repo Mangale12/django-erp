@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
-from hotel_app.restaurant_menu.models import KitchenType
-from hotel_app.restaurant_menu.models.kot_status import KOTStatus
+from hotel_app.restaurant_menu.models import KOTStatus
 
 
 def index(request):
@@ -14,7 +13,7 @@ def index(request):
         {"name": "description", "label": "Description", "type": "textarea"},
         {"name": "is_active", "label": "Active", "type": "checkbox", "default": True}
     ]
-    return render(request, 'restaurant_menu/kitchen_type/list.html', {
+    return render(request, 'restaurant_menu/kot_status/list.html', {
         'fields': fields
     })
 
@@ -26,7 +25,7 @@ def create(request):
         
         try:
             with transaction.atomic():
-                kot_status = KOTStatus.objects.create(
+                KOTStatus.objects.create(
                     name=request.POST.get('name'),
                     code=request.POST.get('code'),
                     description=request.POST.get('description'),
@@ -37,15 +36,6 @@ def create(request):
                     return JsonResponse({
                         'success': True,
                         'message': 'KOT Status created successfully',
-                        'kot_status': {
-                            'id': kot_status.id,
-                            'name': kot_status.name,
-                            'code': kot_status.code,
-                            'description': kot_status.description,
-                            'is_active': kot_status.is_active,
-                            'edit_url': reverse('kitchen_type_update', args=[kot_status.id]),
-                            'delete_url': reverse('kitchen_type_delete', args=[kot_status.id]),
-                        }
                     })
                 
                 messages.success(request, 'KOT Status created successfully')
@@ -151,7 +141,7 @@ def select(request):
     if keyword:
         qs = qs.filter(name__icontains=keyword)
 
-    qs = qs.order_by('-created_at')[:5]
+    qs = qs.order_by('-id')[:5]
 
     results = [
         {

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}KOT Reprint Log{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Restaurant/Menu</li>
+<li class="breadcrumb-item active">KOT Reprint Log</li>
+{% endblock %}
+
+{% block content %}
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+{% include 'components/modals/modal.html' with modal_id='kotReprintLogModal' form_id='kotReprintLogForm' title='Add KOT Reprint Log' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>KOT Reprint Log</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kotReprintLogModal">
+            <i data-feather="plus"></i> Add KOT Reprint Log
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const $container = $('#datatable-container');
+    $container.html('<table id="kotReprintLogTable" class="table table-striped table-bordered"></table>');
+
+    const updateUrlTemplate = '{% url "kot_reprint_log_update" pk=0 %}'.replace('/0/', '/{id}/');
+    const detailUrlTemplate = '{% url "kot_reprint_log_edit" pk=0 %}'.replace('/0/', '/{id}/');
+    const deleteUrlTemplate = '{% url "kot_reprint_log_delete" pk=0 %}'.replace('/0/', '/{id}/');
+
+    const table = $('#kotReprintLogTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "kot_reprint_log_datatable" %}',
+        columns: [
+            { data: 'kot', title: 'KOT' },
+            { data: 'reprinted_by', title: 'Reprinted By' },
+            { data: 'reprint_timestamp', title: 'Reprint Timestamp' },
+            { data: 'reason', title: 'Reason' },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function(id) {
+                    return `
+                        <div class="btn-group btn-group-sm gap-1">
+                            <button class="btn btn-primary edit-kotreprintlog" data-id="${id}">
+                                <i data-feather="edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger delete-kotreprintlog" data-id="${id}">
+                                <i data-feather="trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        ]
+    });
+
+    initCrudModal({
+        modalId: 'kotReprintLogModal',
+        formId: 'kotReprintLogForm',
+        table: table,
+        createUrl: '{% url "kot_reprint_log_create" %}',
+        updateUrlTemplate: updateUrlTemplate,
+        detailUrlTemplate: detailUrlTemplate,
+        deleteUrlTemplate: deleteUrlTemplate,
+        idFieldName: 'id',
+        entityName: 'KOT Reprint Log',
+        afterReset: function() {
+            $('#kotReprintLogModal .modal-title').text('Add KOT Reprint Log');
+        }
+    });
+});
+</script>
+{% endblock %}
