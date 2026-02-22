@@ -4,12 +4,14 @@ from hotel_app.reception.views import (
     booking_view,
     checkin_view,
     check_out_view,
+    stay_view,
 )
 
 from hotel_app.reception.datatables.guest_data_table import GuestDataTable
 from hotel_app.reception.datatables.booking_data_table import BookingDataTable
 from hotel_app.reception.datatables.checkin_data_table import CheckInDataTable
 from hotel_app.reception.datatables.check_out_data_table import CheckOutDataTable
+from hotel_app.reception.datatables.stay_data_table import StayDataTable
 
 # Define all your CRUD entities in one place
 RECEPTION_ENTITIES = [
@@ -36,5 +38,11 @@ RECEPTION_ENTITIES = [
         'view_module': check_out_view,
         'datatable_view': CheckOutDataTable,
         'verbose_name': 'Check Out'
+    },
+    {
+        'name': 'stay',
+        'view_module': stay_view,
+        'datatable_view': StayDataTable,
+        'verbose_name': 'Stay'
     },
 ]

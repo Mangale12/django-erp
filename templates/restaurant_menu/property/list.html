@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Property{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Restaurant/Menu</li>
+<li class="breadcrumb-item active">Property</li>
+{% endblock %}
+
+{% block content %}
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+{% include 'components/modals/modal.html' with modal_id='propertyModal' form_id='propertyForm' title='Add Property' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Property</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#propertyModal">
+            <i data-feather="plus"></i> Add Property
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const $container = $('#datatable-container');
+    $container.html('<table id="propertyTable" class="table table-striped table-bordered"></table>');
+
+    const updateUrlTemplate = '{% url "property_update" pk=0 %}'.replace('/0/', '/{id}/');
+    const detailUrlTemplate = '{% url "property_edit" pk=0 %}'.replace('/0/', '/{id}/');
+    const deleteUrlTemplate = '{% url "property_delete" pk=0 %}'.replace('/0/', '/{id}/');
+
+    const table = $('#propertyTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "property_datatable" %}',
+        columns: [
+            { data: 'property_code', title: 'Code' },
+            { data: 'property_name', title: 'Property Name' },
+            { data: 'property_type', title: 'Type' },
+            { data: 'city', title: 'City' },
+            { data: 'state', title: 'State' },
+            { data: 'country', title: 'Country' },
+            { data: 'phone', title: 'Phone' },
+            { data: 'email', title: 'Email' },
+            { data: 'parent_property', title: 'Parent Property' },
+            {
+                data: 'is_active',
+                title: 'Status',
+                render: data => data ? 'Active' : 'Inactive'
+            },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function(id) {
+                    return `
+                        <div class="btn-group btn-group-sm gap-1">
+                            <button class="btn btn-primary edit-property" data-id="${id}">
+                                <i data-feather="edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger delete-property" data-id="${id}">
+                                <i data-feather="trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        ]
+    });
+
+    initCrudModal({
+        modalId: 'propertyModal',
+        formId: 'propertyForm',
+        table: table,
+        createUrl: '{% url "property_create" %}',
+        updateUrlTemplate: updateUrlTemplate,
+        detailUrlTemplate: detailUrlTemplate,
+        deleteUrlTemplate: deleteUrlTemplate,
+        idFieldName: 'id',
+        entityName: 'Property',
+        afterReset: function() {
+            $('#propertyModal .modal-title').text('Add Property');
+            $('#propertyModal [name="is_active"]').prop('checked', true);
+        }
+    });
+});
+</script>
+{% endblock %}

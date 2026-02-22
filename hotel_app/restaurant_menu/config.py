@@ -20,6 +20,10 @@ from hotel_app.restaurant_menu.views import (
     kot_amendment_view,
     kot_course_control_view,
     kot_reprint_log_view,
+    property_view,
+    property_settings_view,
+    folio_view,
+    folio_transaction_view,
 )
 
 from hotel_app.restaurant_menu.datatables.menu_category_data_table import MenuCategoryDataTable
@@ -42,6 +46,10 @@ from hotel_app.restaurant_menu.datatables.kds_log_data_table import KDSLogDataTa
 from hotel_app.restaurant_menu.datatables.kot_amendment_data_table import KOTAmendmentDataTable
 from hotel_app.restaurant_menu.datatables.kot_course_control_data_table import KOTCourseControlDataTable
 from hotel_app.restaurant_menu.datatables.kot_reprint_log_data_table import KOTReprintLogDataTable
+from hotel_app.restaurant_menu.datatables.property_data_table import PropertyDataTable
+from hotel_app.restaurant_menu.datatables.property_settings_data_table import PropertySettingsDataTable
+from hotel_app.restaurant_menu.datatables.folio_data_table import FolioDataTable
+from hotel_app.restaurant_menu.datatables.folio_transaction_data_table import FolioTransactionDataTable
 
 # Define all your CRUD entities in one place
 RESTAURANT_ENTITIES = [
@@ -164,6 +172,30 @@ RESTAURANT_ENTITIES = [
         'view_module': kot_reprint_log_view,
         'datatable_view': KOTReprintLogDataTable,
         'verbose_name': 'KOT Reprint Log'
+    },
+    {
+        'name': 'property',
+        'view_module': property_view,
+        'datatable_view': PropertyDataTable,
+        'verbose_name': 'Property'
+    },
+    {
+        'name': 'property_settings',
+        'view_module': property_settings_view,
+        'datatable_view': PropertySettingsDataTable,
+        'verbose_name': 'Property Settings'
+    },
+    {
+        'name': 'folio',
+        'view_module': folio_view,
+        'datatable_view': FolioDataTable,
+        'verbose_name': 'Folio'
+    },
+    {
+        'name': 'folio_transaction',
+        'view_module': folio_transaction_view,
+        'datatable_view': FolioTransactionDataTable,
+        'verbose_name': 'Folio Transaction'
     },
     
 ]

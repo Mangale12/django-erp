@@ -24,3 +24,7 @@ from .kds_log import KDSLog
 from .kot_amendment import KOTAmendment
 from .kot_course_control import KOTCourseControl
 from .kot_reprint_log import KOTReprintLog
+from .property import Property
+from .property_settings import PropertySettings
+from .folio import Folio
+from .folio_transaction import FolioTransaction

@@ -11,3 +11,7 @@ from .kds_log_data_table import KDSLogDataTable
 from .kot_amendment_data_table import KOTAmendmentDataTable
 from .kot_course_control_data_table import KOTCourseControlDataTable
 from .kot_reprint_log_data_table import KOTReprintLogDataTable
+from .property_data_table import PropertyDataTable
+from .property_settings_data_table import PropertySettingsDataTable
+from .folio_data_table import FolioDataTable
+from .folio_transaction_data_table import FolioTransactionDataTable

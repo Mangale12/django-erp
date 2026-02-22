@@ -36,6 +36,11 @@
                             <i data-feather="list"></i> Checkout
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stay_list' %}">
+                            <i data-feather="list"></i> Stay
+                        </a>
+                    </li>
                    
                 </ul>
             </li>
@@ -211,8 +216,28 @@
                             <i data-feather="list"></i> KOT Reprint Logs
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'property_list' %}">
+                            <i data-feather="list"></i> Property
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'property_settings_list' %}">
+                            <i data-feather="list"></i> Property Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'folio_list' %}">
+                            <i data-feather="list"></i> Folio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'folio_transaction_list' %}">
+                            <i data-feather="list"></i> Folio Transaction
+                        </a>
+                    </li>
+
                     
-                
                 </ul>
             </li>
 
@@ -268,6 +293,11 @@
                         </a>
                     </li>
                     <li>
+                        <a class="nav-link" href="{% url 'country_list' %}">
+                            <i data-feather="list"></i> Country
+                        </a>
+                    </li>
+                    <li>
                         <a class="nav-link" href="{% url 'service_category_list' %}">
                             <i data-feather="list"></i> Service Category
                         </a>
@@ -310,6 +340,11 @@
                     <li>
                         <a class="nav-link" href="{% url 'priority_level_list' %}">
                             <i data-feather="list"></i> Priority Level
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'bill_type_list' %}">
+                            <i data-feather="list"></i> Bill Type
                         </a>
                     </li>
                 </ul>

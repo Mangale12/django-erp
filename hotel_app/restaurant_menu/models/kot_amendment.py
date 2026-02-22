@@ -74,3 +74,4 @@ class KOTAmendment(models.Model):
 
     def __str__(self):
         return f"{self.amendment_id} | {self.get_action_type_display()}"
+ 

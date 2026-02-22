@@ -19,6 +19,7 @@ from master_setup.views import (
     country_view,
     printer_view,
     priority_level_view,
+    bill_type_view,
 )
 
 from .datatables import (
@@ -41,6 +42,7 @@ from .datatables import (
     CountryDataTable,
     PrinterDataTable,
     PriorityLevelDataTable,
+    BillTypeDataTable,
 )
 
 # Define all your CRUD entities in one place
@@ -158,5 +160,11 @@ MASTER_ENTITIES = [
         'view_module': priority_level_view,
         'datatable_view': PriorityLevelDataTable,
         'verbose_name': 'Priority Level'
+    },
+    {
+        'name': 'bill_type',
+        'view_module': bill_type_view,
+        'datatable_view': BillTypeDataTable,
+        'verbose_name': 'Bill Type'
     },
 ]

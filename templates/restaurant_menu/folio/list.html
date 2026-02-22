@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Folio{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Restaurant/Menu</li>
+<li class="breadcrumb-item active">Folio</li>
+{% endblock %}
+
+{% block content %}
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+{% include 'components/modals/modal.html' with modal_id='folioModal' form_id='folioForm' title='Add Folio' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Folio</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#folioModal">
+            <i data-feather="plus"></i> Add Folio
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const $container = $('#datatable-container');
+    $container.html('<table id="folioTable" class="table table-striped table-bordered"></table>');
+
+    const updateUrlTemplate = '{% url "folio_update" pk=0 %}'.replace('/0/', '/{id}/');
+    const detailUrlTemplate = '{% url "folio_edit" pk=0 %}'.replace('/0/', '/{id}/');
+    const deleteUrlTemplate = '{% url "folio_delete" pk=0 %}'.replace('/0/', '/{id}/');
+
+    const table = $('#folioTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "folio_datatable" %}',
+        columns: [
+            { data: 'folio_id', title: 'Folio ID' },
+            { data: 'stay_id', title: 'Stay ID' },
+            { data: 'guest_name', title: 'Guest' },
+            { data: 'total_debit', title: 'Total Debit' },
+            { data: 'total_credit', title: 'Total Credit' },
+            { data: 'balance_amount', title: 'Balance Amount' },
+            { data: 'folio_status', title: 'Folio Status' },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function(id) {
+                    return renderActionButtons(id, {
+                        edit: detailUrlTemplate,
+                        delete: deleteUrlTemplate,
+                        modal_id: '#folioModal',
+                        title: 'Edit Folio',
+                    });
+                }
+            }
+        ]
+    });
+
+    initCrudModal({
+        modalId: 'folioModal',
+        formId: 'folioForm',
+        table: table,
+        createUrl: '{% url "folio_create" %}',
+        updateUrlTemplate: updateUrlTemplate,
+        detailUrlTemplate: detailUrlTemplate,
+        deleteUrlTemplate: deleteUrlTemplate,
+        idFieldName: 'id',
+        entityName: 'Folio',
+        afterReset: function() {
+            $('#folioModal .modal-title').text('Add Folio');
+            $('#folioModal [name="folio_status"]').val('OPEN');
+        }
+    });
+
+    $(document).on('input', '#folioForm [name="total_debit"], #folioForm [name="total_credit"]', function() {
+        const debit = parseFloat($('#folioForm [name="total_debit"]').val() || '0');
+        const credit = parseFloat($('#folioForm [name="total_credit"]').val() || '0');
+        $('#folioForm [name="balance_amount"]').val((debit - credit).toFixed(2));
+    });
+
+    $(document).on('click', '#folioTable [data-action="delete"]', function() {
+        const id = $(this).data('id');
+        if (!confirm('Delete this folio?')) return;
+
+        $.ajax({
+            url: deleteUrlTemplate.replace('{id}', id),
+            method: 'POST',
+            headers: { 'X-CSRFTOKEN': $('input[name=csrfmiddlewaretoken]').val() },
+            success: function() {
+                table.ajax.reload();
+                showAlert('Folio deleted successfully');
+            },
+            error: function() {
+                showAlert('Delete failed', 'danger');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
