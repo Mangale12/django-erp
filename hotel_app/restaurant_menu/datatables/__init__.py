@@ -15,3 +15,5 @@ from .property_data_table import PropertyDataTable
 from .property_settings_data_table import PropertySettingsDataTable
 from .folio_data_table import FolioDataTable
 from .folio_transaction_data_table import FolioTransactionDataTable
+from .source_module_data_table import SourceModuleDataTable
+from .bill_master_data_table import BillMasterDataTable

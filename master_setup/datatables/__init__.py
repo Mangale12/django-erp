@@ -20,3 +20,4 @@ from .country_data_table import CountryDataTable
 from .printer_data_table import PrinterDataTable
 from .priority_level_data_table import PriorityLevelDataTable
 from .bill_type_data_table import BillTypeDataTable
+from .fiscal_year_data_table import FiscalYearDataTable

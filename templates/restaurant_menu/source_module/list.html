@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Source Module{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">Restaurant/Menu</li>
+<li class="breadcrumb-item active">Source Module</li>
+{% endblock %}
+
+{% block content %}
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 70px;"></div>
+
+{% include 'components/modals/modal.html' with modal_id='sourceModuleModal' form_id='sourceModuleForm' title='Add Source Module' fields=fields %}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5>Source Module</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sourceModuleModal">
+            <i data-feather="plus"></i> Add Source Module
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="datatable-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const $container = $('#datatable-container');
+    $container.html('<table id="sourceModuleTable" class="table table-striped table-bordered"></table>');
+
+    const updateUrlTemplate = '{% url "source_module_update" pk=0 %}'.replace('/0/', '/{id}/');
+    const detailUrlTemplate = '{% url "source_module_edit" pk=0 %}'.replace('/0/', '/{id}/');
+    const deleteUrlTemplate = '{% url "source_module_delete" pk=0 %}'.replace('/0/', '/{id}/');
+
+    const table = $('#sourceModuleTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{% url "source_module_datatable" %}',
+        columns: [
+            { data: 'module_name', title: 'Module Name' },
+            { data: 'module_code', title: 'Module Code' },
+            {
+                data: 'is_postable_to_folio',
+                title: 'Is Postable To Folio',
+                render: data => data ? 'Yes' : 'No'
+            },
+            {
+                data: 'is_active',
+                title: 'Is Active',
+                render: data => data ? 'Yes' : 'No'
+            },
+            { data: 'created_at', title: 'Created At' },
+            { data: 'updated_at', title: 'Updated At' },
+            {
+                data: 'id',
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function(id) {
+                    return renderActionButtons(id, {
+                        edit: detailUrlTemplate,
+                        delete: deleteUrlTemplate,
+                        modal_id: '#sourceModuleModal',
+                        title: 'Edit Source Module',
+                    });
+                }
+            }
+        ]
+    });
+
+    initCrudModal({
+        modalId: 'sourceModuleModal',
+        formId: 'sourceModuleForm',
+        table: table,
+        createUrl: '{% url "source_module_create" %}',
+        updateUrlTemplate: updateUrlTemplate,
+        detailUrlTemplate: detailUrlTemplate,
+        deleteUrlTemplate: deleteUrlTemplate,
+        idFieldName: 'id',
+        entityName: 'Source Module',
+        afterReset: function() {
+            $('#sourceModuleModal .modal-title').text('Add Source Module');
+            $('#sourceModuleModal [name="is_postable_to_folio"]').prop('checked', false);
+            $('#sourceModuleModal [name="is_active"]').prop('checked', true);
+        }
+    });
+});
+</script>
+{% endblock %}

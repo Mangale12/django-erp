@@ -20,6 +20,7 @@ from master_setup.views import (
     printer_view,
     priority_level_view,
     bill_type_view,
+    fiscal_year_view,
 )
 
 from .datatables import (
@@ -43,6 +44,7 @@ from .datatables import (
     PrinterDataTable,
     PriorityLevelDataTable,
     BillTypeDataTable,
+    FiscalYearDataTable,
 )
 
 # Define all your CRUD entities in one place
@@ -166,5 +168,11 @@ MASTER_ENTITIES = [
         'view_module': bill_type_view,
         'datatable_view': BillTypeDataTable,
         'verbose_name': 'Bill Type'
+    },
+    {
+        'name': 'fiscal_year',
+        'view_module': fiscal_year_view,
+        'datatable_view': FiscalYearDataTable,
+        'verbose_name': 'Fiscal Year'
     },
 ]

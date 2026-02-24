@@ -24,6 +24,8 @@ from hotel_app.restaurant_menu.views import (
     property_settings_view,
     folio_view,
     folio_transaction_view,
+    source_module_view,
+    bill_master_view,
 )
 
 from hotel_app.restaurant_menu.datatables.menu_category_data_table import MenuCategoryDataTable
@@ -50,6 +52,8 @@ from hotel_app.restaurant_menu.datatables.property_data_table import PropertyDat
 from hotel_app.restaurant_menu.datatables.property_settings_data_table import PropertySettingsDataTable
 from hotel_app.restaurant_menu.datatables.folio_data_table import FolioDataTable
 from hotel_app.restaurant_menu.datatables.folio_transaction_data_table import FolioTransactionDataTable
+from hotel_app.restaurant_menu.datatables.source_module_data_table import SourceModuleDataTable
+from hotel_app.restaurant_menu.datatables.bill_master_data_table import BillMasterDataTable
 
 # Define all your CRUD entities in one place
 RESTAURANT_ENTITIES = [
@@ -196,6 +200,18 @@ RESTAURANT_ENTITIES = [
         'view_module': folio_transaction_view,
         'datatable_view': FolioTransactionDataTable,
         'verbose_name': 'Folio Transaction'
+    },
+    {
+        'name': 'source_module',
+        'view_module': source_module_view,
+        'datatable_view': SourceModuleDataTable,
+        'verbose_name': 'Source Module'
+    },
+    {
+        'name': 'bill_master',
+        'view_module': bill_master_view,
+        'datatable_view': BillMasterDataTable,
+        'verbose_name': 'Bill Master'
     },
     
 ]
